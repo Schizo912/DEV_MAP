@@ -4392,11 +4392,15 @@ if (jaslingLayer && jaslingLayer.getVisible && jaslingLayer.getVisible()) {
   map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
     if (layer === jaslingLayer) {
       const props = feature.getProperties();
+      const luas = Number(props.LUAS || 0).toLocaleString('id-ID', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });	    
       popup.innerHTML = `
         <b>Jasa Lingkungan</b><br>
         <b>Wisata:</b> ${props.WISATA || '-'}<br>
-        <b>Nama:</b> ${props.NAMA || '-'}
-      `;
+        <b>Luas (ha):</span> ${luas}
+        `;
       overlay.setPosition(coordinate);
       found = true;
       return true;
@@ -4936,6 +4940,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
