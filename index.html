@@ -1398,22 +1398,23 @@ function showRekapModalJASLING() {
 
       rekapModalBody.innerHTML = html;
 
-      // Zoom & highlight row saat klik nama wisata
+      // Event listener zoom
       rekapModalBody.querySelectorAll('.zoom-jasling').forEach(link => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
           const idx = parseInt(this.dataset.idx, 10);
           const feature = features[idx];
           if (feature) {
-            // Transform extent dari EPSG:32749 ke EPSG:3857
-            const extent = ol.proj.transformExtent(
-              feature.getGeometry().getExtent(),
-              'EPSG:32749',
-              'EPSG:3857'
-            );
-            map.getView().fit(extent, { padding: [40, 40, 40, 40], duration: 800, maxZoom: 16 });
+            const extent32749 = feature.getGeometry().getExtent();
+            const center32749 = ol.extent.getCenter(extent32749);
+            const center3857 = ol.proj.transform(center32749, 'EPSG:32749', 'EPSG:3857');
+            map.getView().animate({
+              center: center3857,
+              duration: 800,
+              zoom: 14
+            });
 
-            // Hapus highlight sebelumnya
+            // Highlight baris
             rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row =>
               row.classList.remove('rekap-highlight-row')
             );
@@ -4973,6 +4974,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
