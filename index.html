@@ -1,0 +1,4809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PETA BPHL 8</title>
+  <link rel="stylesheet" href="ol.css">
+  <style>
+    html, body, #map {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f6f8fa;
+    }
+    #map { z-index:1; }
+.ol-popup {
+  position: absolute;
+  min-width: 200px;
+  max-width: 370px;
+  background: linear-gradient(135deg, #f6f8fa 80%, #dde8fa 100%);
+  border-radius: 14px;
+  border: 1.6px solid #b5c0d0;
+  box-shadow: 0 6px 32px rgba(0,56,180,0.16), 0 2px 8px #e6eaf5;
+  padding: 0;
+  z-index: 2200;
+  font-size: 13.5px;
+  color: #205471;
+  transition: box-shadow 0.2s;
+  line-height: 1.65;
+  overflow: hidden;
+}
+.ol-popup .popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg,#e3eafc 60%,#f7faff 100%);
+  border-bottom: 1.3px solid #e5eaf3;
+  padding: 10px 18px 7px 16px;
+  border-radius: 14px 14px 0 0;
+  font-weight: 700;
+  font-size: 15px;
+  color: #1363c6;
+  letter-spacing: 0.01em;
+}
+
+.ol-popup .popup-close {
+  background: none;
+  border: none;
+  color: #f44336;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+  margin-left: 8px;
+  transition: color 0.13s;
+  padding: 0 2px;
+}
+.ol-popup .popup-close:hover {
+  color: #b71c1c;
+}
+
+#popup-content {
+  padding: 13px 18px 13px 18px;
+  background: transparent;
+  font-size: 13.6px;
+  color: #1b2944;
+}
+
+.ol-popup b, .ol-popup strong {
+  color: #1a73e8;
+  font-weight: 600;
+}
+    .accordion-panel {
+      position: absolute; top: 80px; left: 36px; z-index: 1000;
+      max-width: 430px; width: 100%;
+      background: rgba(255,255,255,0.98);
+      border: 1.5px solid #b5c0d0;
+      border-radius: 14px;
+      box-shadow: 0 6px 32px rgba(26,115,232,0.10);
+      font-size: 13px;
+      overflow-x: auto;
+      padding: 0;
+    }
+    .acc-item { border-bottom: 1.5px solid #e8eaf0; }
+    .acc-header {
+      padding: 10px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #175a8a;
+      cursor: pointer;
+      background: none;
+      user-select: none;
+      transition: background 0.15s;
+      border-radius: 10px 10px 0 0;
+    }
+    .acc-header.active,
+    .acc-header:hover {
+      background: #e9f4ff;
+    }
+    .acc-body {
+      padding: 12px 18px 14px 18px;
+      display: none;
+      background: none;
+      animation: fadeIn 0.22s;
+    }
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateY(12px);}
+      to { opacity:1; transform:translateY(0);}
+    }
+    .filter-form-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .filter-form-row > div { flex: 1; }
+    .filter-form-row label {
+      font-weight: 400;
+      margin-bottom: 6px;
+      display: block;
+      color: #1a237e;
+      letter-spacing: 0.02em;
+    }
+    .filter-form-row select {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 7px;
+      border: 1.2px solid #b5c0d0;
+      font-size: 14px;
+      background: #f8fafc;
+      margin-bottom: 0;
+      margin-top: 2px;
+      transition: border 0.2s;
+    }
+    .filter-form-row select:focus {
+      border: 1.5px solid #1a73e8;
+      outline: none;
+    }
+    .filter-form-row button {
+      height: 38px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: linear-gradient(90deg, #1a73e8 60%, #64b5f6 100%);
+      color: white;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(26,115,232,0.08);
+      transition: background 0.2s;
+    }
+    .filter-form-row button[title="Bersihkan semua layer"] {
+      background: #fff;
+      border: 1.5px solid #b5c0d0;
+      color: #1a73e8;
+    }
+    .filter-form-row button:hover {
+      background: linear-gradient(90deg, #1565c0 60%, #42a5f5 100%);
+    }
+    .acc-body details {
+      margin-top: 14px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      padding: 7px 0 3px 0;
+      background: #f7fafd;
+      box-shadow: 0 1px 4px rgba(26,115,232,0.03);
+    }
+    .acc-body details[open] {
+      background: #f0f4fa;
+    }
+    .acc-body summary {
+      font-weight: 700;
+      font-size: 15px;
+      color: #0d47a1;
+      margin-bottom: 7px;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+    }
+    .acc-body label {
+      margin-bottom: 8px;
+      margin-top: 3px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #222;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+    }
+    .acc-body input[type="checkbox"] {
+      accent-color: #1a73e8;
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+    }
+    #upload-box {
+      background:rgba(255,255,255,0.98);
+      border:1px solid #b5c0d0;
+      border-radius:12px;
+      box-shadow:0 1.5px 8px #eaf0fa;
+      padding:11px 7px 7px 7px;
+      margin-bottom: 7px;
+      width:100%;
+      max-width:97%;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+    .upload-layer-row {
+      display:flex;
+      align-items:center;
+      background:rgba(240,246,255,0.92);
+      border-radius:11px;
+      margin-bottom:6px;
+      padding:6px 11px 6px 8px;
+      box-shadow:0 0.5px 2.5px #f0f2fa;
+      transition:background 0.2s;
+    }
+    .upload-layer-row:hover {
+      background:rgba(221,235,255,0.98);
+    }
+    .upload-layer-toggle {
+      width:21px;height:21px;display:flex;align-items:center;justify-content:center;
+      border-radius:50%;margin-right:11px;border:2.2px solid #b0c1d8;cursor:pointer;transition:background 0.16s, border 0.16s;
+    }
+    .upload-layer-toggle.on {background:#2ecc40;border-color:#27ae60;}
+    .upload-layer-toggle.off {background:#ff4f4f;border-color:#ffbdbd;}
+    .upload-layer-name {
+      flex:1;font-size:13.6px;color:#222B3A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+      margin-right:7px;
+    }
+    .upload-layer-btn {
+      font-size:11.3px;padding:2.5px 12px;margin-left:4px;border-radius:8px;border:1.3px solid #c5c9d3;
+      background:#fff;cursor:pointer;transition:background 0.13s,border 0.13s, color 0.13s;
+      font-weight:500;
+    }
+    .upload-layer-btn:hover {
+      background:#e8f3ff;border:1.3px solid #2196f3;color:#1565c0;
+    }
+    .upload-layer-btn.red {
+      border:1.3px solid #ffbdbd;background:#fff;color:#e53935;
+    }
+    .upload-layer-btn.red:hover {
+      background:#ffeaea;border:1.3px solid #f44336;color:#b71c1c;
+    }
+    #overlap-toolbox button {
+      font-size: 12px;
+    }
+    #overlap-toolbox .reset-btn {
+      background:#ff746c !important; color:#fff !important; border:1px solid #c3ccd6 !important;
+      font-weight:500; cursor:pointer;
+      transition: background 0.2s;
+    }
+    #overlap-toolbox .reset-btn:hover {
+      background:#ef5350 !important;
+    }
+	.rekap-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(40,55,80,0.17);
+}
+.rekap-modal-content {
+  background: #fff;
+  margin: 52px auto;
+  border-radius: 14px;
+  padding: 18px 18px 12px 18px;
+  border: 1px solid #e1e8ef;
+  max-width: 470px;
+  min-width: 260px;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08);
+  position: absolute; /* <--- ini agar bisa di-drag */
+  left: 50%;
+  top: 18%;
+  transform: translate(-50%, 0);
+  transition: box-shadow 0.13s;
+}
+.rekap-modal-close {
+  color: #666;
+  float: right;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: -8px;
+  margin-right: -7px;
+  background: none;
+  border: none;
+  outline: none;
+  transition: color 0.13s;
+}
+.rekap-modal-close:hover { color: #f44336; }
+.rekap-modal-title {
+  font-size: 1.08em;
+  font-weight: 600;
+  margin-bottom: 7px;
+  user-select: none;
+  cursor: move;
+  color: #205471;
+  letter-spacing: 0.01em;
+}
+.rekap-table-scroll {
+  max-height: 200px;    /* Untuk 5 baris, sesuaikan jika mau beda */
+  overflow-y: auto;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 6px #e5e7eb;
+  margin-top: 6px;
+}
+.map-tools-box {
+  position: absolute;
+  right: 28px;
+  bottom: 28px;
+  z-index: 1200;
+  background: #ffffff;
+  border: 1.5px solid #b5c0d0;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(26,115,232,0.10);
+  padding: 8px 12px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.map-tools-box label {
+  margin-right: 6px;
+  font-size: 13.3px;
+  color: #333;
+}
+	.map-tools-row {
+	  display: flex;
+	  align-items: center;
+	  gap: 4px;
+	}
+	.map-tools-box select {
+	  padding: 6px 10px;
+	  border-radius: 8px;
+	  border: 1.2px solid #b5c0d0;
+	  font-size: 13.5px;
+	  background: #f8fafc;
+	}
+	.map-tools-box select:focus {
+	  border: 1.5px solid #1a73e8;
+	  outline: none;
+	}
+.map-tool-btn {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(90deg, #e3eafc 60%, #f6f8fa 100%);
+  color: #1976d2;
+  border: 1.2px solid #b5c0d0;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  transition: background 0.2s, color 0.2s;
+}
+.map-tool-btn:hover {
+  background: #1976d2;
+  color: #fff;
+}
+
+/* CSS for select-area */
+#select-area {
+  position: absolute;
+  top: 20px;
+  left: 36px;
+  width: 390px;
+  background: #ffffff;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1.5px solid #b5c0d0;
+  box-shadow: 0 4px 16px rgba(26,115,232,0.1);
+  z-index: 1100;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+#select-area select {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 13.5px;
+  border-radius: 7px;
+  border: 1.2px solid #1a73e8;
+  background-color: #eaf3ff;
+  color: #1a237e;
+  outline: none;
+  appearance: none;
+}
+
+#select-area button {
+  width: 36px;
+  height: 36px;
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(26,115,232,0.15);
+  transition: background 0.2s;
+}
+#select-area button:hover {
+  background-color: #1565c0;
+}
+
+#select-area .reset-btn {
+  background-color: #ffffff;
+  border: 1.5px solid #b5c0d0;
+  color: #1a73e8;
+}
+#select-area .reset-btn:hover {
+  background-color: #e0e0e0;
+  color: #0d47a1;
+}
+.group-label {
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: 6px;
+  margin-bottom: 2px;
+  color: #1351B4;
+}
+#legend-toggle-btn {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  z-index: 1201;
+  padding: 6px 10px;
+  font-size: 18px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+#legend-container {
+  position: absolute;
+  top: 70px;  /* Tepat di bawah tombol toggle */
+  right: 28px;
+  z-index: 1100;
+  background: white;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 250px;
+}
+	  
+@media (max-width: 600px) {
+.accordion-panel { left: 2vw; top: 10vw; width: 96vw; font-size: 13px; }
+    }
+	  
+</style>
+	
+</head>
+<body>
+  <div id="map"></div>
+  
+  <div id="popup" class="ol-popup">
+  <div class="popup-header">
+    <span id="popup-title"></span>
+    <button class="popup-close" onclick="closePopup()" title="Tutup">&times;</button>
+  </div>
+  <div id="popup-content"></div>
+</div>
+<!-- Ganti id= dengan ID Google Drive kamu -->
+<div id="corner-logo" style="
+  position: absolute;
+  bottom: 20px;
+  left: 36px;
+  z-index: 800;
+">
+  <img src="SEMAR8.png" alt="Logo" width="64" />
+  </div>
+
+<div id="map-tools-box" class="map-tools-box">
+  <div class="map-tools-row">
+    <label for="basemap" style="margin-right:8px;">Basemap:</label>
+    <select id="basemap" onchange="switchBaseLayer()">
+      <option value="osm">OpenStreetMap</option>
+      <option value="satellite">Google Satellite</option>
+      <option value="esri">Esri Satellite</option>
+    </select>
+    <button type="button" onclick="zoomToMyLocation()" title="Lokasi Saya" class="map-tool-btn">
+      <span style="font-size:18px;">📍</span>
+    </button>
+    <button type="button" onclick="activateMeasure('LineString')" class="map-tool-btn" title="Ukur Jarak">📏</button>
+    <button type="button" onclick="activateMeasure('Polygon')" class="map-tool-btn" title="Ukur Luas">📐</button>
+    <button type="button" onclick="clearAllMeasure()" class="map-tool-btn" title="Hapus Pengukuran">✖</button>
+
+  </div>
+  <div id="measure-result" style="margin-top:8px; font-size:13px; color:#1565c0;"></div>
+</div>
+<!-- Wrapper Select & Tombol Toggle -->
+<div id="select-area" style="position: absolute; top: 20px; left: 36px; z-index: 1201; display: flex; align-items: center; gap: 6px;">
+    <!-- Tombol Globe Toggle Panel -->
+  <button onclick="toggleAccordionPanel()" title="Tampilkan/Lihat Layer Peta"
+    style="padding: 6px 10px; font-size: 18px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer;">
+    🌍
+  </button>
+  <!-- Dropdown Provinsi -->
+  <select id="provinsi" onchange="handleProvinsiChange()"
+    style="padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px;">
+    <option value="" selected>Provinsi</option>
+    <option value="WILKER">Wilker BPHL 8</option>
+    <option value="YOGYA">D.I.Yogyakarta</option>
+    <option value="JATENG">Jawa Tengah</option>
+    <option value="JATIM">Jawa Timur</option>
+  </select>
+  <!-- Dropdown Kabupaten -->
+  <select id="kabupaten" onchange="updateLayer()"
+    style="padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px;">
+    <option value="" selected>Kab/Kota</option>
+  </select>
+  <!-- Tombol Zoom -->
+  <button type="button" onclick="zoomToSelected('kabupaten')" title="Zoom ke Kabupaten"
+    style="padding: 6px 10px; font-size: 16px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer;">🔍</button>
+  <!-- Tombol Reset -->
+  <button type="button" onclick="clearAllCheckboxes()" title="Bersihkan semua layer"
+    style="padding: 6px 10px; font-size: 16px; border-radius: 6px; border: 1px solid #ccc; background: white; cursor: pointer;">🔄</button>
+</div>
+	
+  <div id="accordion-panel" class="accordion-panel" style="position:absolute; top:80px; left:36px; z-index:1000; max-width:390px; background:#fff; border:1px solid #ccc; border-radius:8px; padding:10px;">
+    <!-- LAYER GROUP -->
+   <div class="acc-item">
+      <div class="acc-header" onclick="toggleAccPanel(this)">
+        <span>🗺️ <b>Pilih Layer Peta</b></span>
+      </div>
+      <div class="acc-body">
+        <!-- Seluruh slot details asli kamu masukkan di sini! -->
+        <!-- Mulai copy details KAWASAN HUTAN, INDIKASI/ARAHAN, EKSISTING di sini -->
+        <details>
+          <summary><b>PETA KAWASAN HUTAN</b></summary>
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <span style="display: flex; align-items: center;">
+             <input type="checkbox" id="cb-fung-hutn" onchange="toggleFungHutn()" style="margin-right:0;">
+              <button type="button" onclick="showRekapModalFungHutn()" title="Rekap Fungsi Kawasan"
+                style="padding:0; font-size:17px; line-height:0; vertical-align:middle; cursor:pointer; margin-right:8px;">📊</button>
+            </span>
+            <span>Fungsi Kawasan</span>
+          </div>
+          <div id="rekap-fung-hutn" style="margin-top:10px;"></div>
+         <!-- <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <span style="display: flex; align-items: center;">
+              <input type="checkbox" id="cb-khdpk" onchange="toggleKHDPK()" style="margin-right:0;">
+              <button type="button" onclick="showRekapModalKhdpk()" title="Rekap KHDPK"
+                style="padding:0; font-size:17px; line-height:0; vertical-align:middle; cursor:pointer; margin-right:8px;">📊</button>
+            </span>
+            <span>KHDPK</span>
+          </div>
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <span style="display: flex; align-items: center;">
+              <input type="checkbox" id="cb-perhutani" onchange="togglePerhutani()" style="margin-right:0;">
+              <button type="button" onclick="showRekapModalPerhutani()" title="Rekap PERHUTANI"
+                style="padding:0; font-size:17px; line-height:0; vertical-align:middle; cursor:pointer; margin-right:8px;">📊</button>
+            </span>
+            <span>PERHUTANI</span> 
+          </div> -->
+        </details>
+        <details>
+          <summary><b>PETA INDIKASI/ARAHAN</b></summary>
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <span style="display: flex; align-items: center;">
+              <input type="checkbox" id="cb-pippib2025" onchange="togglePIPPIB2025()" style="margin-right:0;">
+              <button type="button" onclick="showRekapModalPIPPIB2025()" title="Rekap PIPPIB 2025"
+                style="padding:0; font-size:17px; line-height:0; vertical-align:middle; cursor:pointer; margin-right:8px;">📊</button>
+            </span>
+            <span>PIPPIB2025</span>
+          </div>
+          <div style="display: flex; align-items: center; margin-bottom: 8px;">
+            <span style="display: flex; align-items: center;">
+              <input type="checkbox" id="cb-piaps9" onchange="togglePIAPS9()" style="margin-right:0;">
+              <button type="button" onclick="showRekapModalPIAPS9()" title="Rekap PIAPS Rev.IX"
+                style="padding:0; font-size:17px; line-height:0; vertical-align:middle; cursor:pointer; margin-right:8px;">📊</button>
+            </span>
+            <span>PIAPS rev.IX</span>
+          </div>
+          <div style="display: flex; align-items: center;">
+            <span style="display: flex; align-items: center;">
+              <input type="checkbox" id="cb-folu" onchange="toggleFOLUJL()" style="margin-right:0;">
+              <button type="button" onclick="showRekapModalFOLUJL()" title="Rekap FOLU Prioritas JASLING"
+                style="padding:0; font-size:17px; line-height:0; vertical-align:middle; cursor:pointer; margin-right:8px;">📊</button>
+            </span>
+            <span>FOLU Prioritas Jasa Lingkungan</span>
+          </div>
+        </details>
+	<details>
+  <summary><b>PETA TATA HUTAN KHDPK</b></summary>
+  <div style="
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+    align-items: start;
+    background: #f6f8fa;
+    border-radius: 12px;
+    padding: 16px 12px 10px 12px;
+  ">
+    <!-- Perhutanan Sosial -->  
+    <div class="layer-group">
+      <div class="group-label" style="margin-bottom:6px;font-weight:bold;color:#003366;">Perhutanan Sosial</div>
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-pphd" onchange="togglePPHD()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPphd()" title="Rekap PPHD"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>HD</span>
+      </div>
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-pphkm" onchange="togglePPHKM()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPphkm()" title="Rekap PPHKM"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>HKM</span>
+      </div>
+	 <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-iphps" onchange="toggleIphps()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalIphps()" title="Rekap IPHPS"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>IPHPS</span> 
+      </div>
+      <div style="display:flex;align-items:center;">
+        <input type="checkbox" id="cb-pkk" onchange="togglePKK()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPkk()" title="Rekap PKK"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>KULIN KK</span> 
+       </div>	      
+    </div>	  
+        <!-- Penggunaan Kawasan Hutan -->
+     <div class="layer-group">
+      <div class="group-label" style="margin-bottom:6px;font-weight:bold;color:#003366;">Penggunaan KH</div>
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-ppkh" onchange="togglePPKH()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPpkh()" title="Rekap PPKH OP"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>PPKH Operasional</span>
+      </div>
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-ppkhexp" onchange="togglePPKHExp()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPPKHExp()" title="Rekap PPKH EXP"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>PPKH Eksplorasi</span>
+      </div>
+            <div style="display:flex;align-items:center;">
+		  <input type="checkbox" id="cb-ppkhpemda" onchange="togglePPKHPemda()" style="margin-right:2px;">
+		  <button type="button" onclick="showRekapModalPPKHPemda()" title="Rekap PPKH PEMDA"
+   		 style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+ 	 <span>PPKH PEMDA</span>
+	</div>
+    </div>
+	<!-- Pemanfaatan Jasa Lingkungan -->  
+     <div class="layer-group">
+      <div class="group-label" style="margin-bottom:6px;font-weight:bold;color:#003366;">Pemanfaatan JASLING</div>
+      <div style="display:flex;align-items:center;">
+        <input type="checkbox" id="cb-JASLING" onchange="toggleJASLING()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalJASLING()" title="Rekap Jasa Lingkungan"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>Jasa Lingkungan*</span>
+      </div>
+    </div>
+    <!-- Penataan Kawasan Hutan -->
+    <div class="layer-group">
+      <div class="group-label" style="margin-bottom:6px;font-weight:bold;color:#003366;">Penataan KH</div>
+      <div style="display:flex;align-items:center;">
+        <input type="checkbox" id="cb-PPTPKH3" onchange="togglePPTPKH3()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPPTPKH3()" title="Rekap PPTPKH Rev. III"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>PPTPKH Rev. III*</span>
+      </div>
+    </div>
+    <!-- Rehabilitasi Hutan -->
+    <div class="layer-group">
+      <div class="group-label" style="margin-bottom:6px;font-weight:bold;color:#003366;">Rehabilitasi Hutan</div>
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-LKritis" onchange="toggleLKritis()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalLKritis()" title="Rekap Lahan Kritis"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>Lahan Kritis*</span>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <input type="checkbox" id="cb-RURHL" onchange="toggleRErosi()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalRURHL()" title="Rekap RU RHL"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>RU RHL*</span>
+      </div>
+    </div>
+    <!-- Pengelolaan Kawasan -->  
+	  <div>
+      <div class="group-label">Pengelolaan KH</div>
+      <div style="display:flex;align-items:center;margin:6px 0;">
+        <input type="checkbox" id="cb-khdpk" onchange="toggleKHDPK()" style="margin-right:4px;">
+        <button type="button" onclick="showRekapModalKhdpk()" title="Rekap KHDPK" style="background:transparent;border:none;font-size:16px;padding:0 4px;">📊</button>
+        <span>KHDPK</span>
+      </div>
+      <div style="display:flex;align-items:center;margin:6px 0;">
+        <input type="checkbox" id="cb-perhutani" onchange="togglePerhutani()" style="margin-right:4px;">
+        <button type="button" onclick="showRekapModalPerhutani()" title="Rekap PERHUTANI" style="background:transparent;border:none;font-size:16px;padding:0 4px;">📊</button>
+        <span>PERHUTANI</span>
+      </div>
+    </div>
+	  
+  </div>
+</details>
+     <details>
+  <summary><b>PETA EKSISTING</b></summary>
+  <div style="
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+    align-items: start;
+    background: #f6f8fa;
+    border-radius: 12px;
+    padding: 16px 12px 10px 12px;
+  ">
+    <div>
+      <!--
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-ppkh" onchange="togglePPKH()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPpkh()" title="Rekap PPKH OP"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>PPKH Operasional</span>
+      </div>
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-ppkhexp" onchange="togglePPKHExp()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPPKHExp()" title="Rekap PPKH EXP"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>PPKH Eksplorasi</span> 
+      </div>
+      -->
+      <!-- KHDTK (Tetap Tampil) -->
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-khdtk" onchange="toggleKHDTK()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalKHDTK()" title="Rekap KHDTK"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>KHDTK</span>
+      </div>
+      <!-- PBPHH (Tetap Tampil) -->
+      <div style="display:flex;align-items:center;">
+        <input type="checkbox" id="cb-pbphh" onchange="togglePBPHH()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPBPHH()" title="Rekap PBPHH"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>PBPHH</span>
+      </div>
+    <!--</div>
+        <div>
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-iphps" onchange="toggleIphps()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalIphps()" title="Rekap IPHPS"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>IPHPS</span> 
+      </div>
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-pkk" onchange="togglePKK()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPkk()" title="Rekap PKK"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>KULIN KK</span> 
+       </div>
+      <div style="display:flex;align-items:center;margin-bottom:9px;">
+        <input type="checkbox" id="cb-pphd" onchange="togglePPHD()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPphd()" title="Rekap PPHD"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>PPHD</span>
+      </div>
+      <div style="display:flex;align-items:center;">
+        <input type="checkbox" id="cb-pphkm" onchange="togglePPHKM()" style="margin-right:2px;">
+        <button type="button" onclick="showRekapModalPphkm()" title="Rekap PPHKM"
+          style="background:transparent;border:none;padding:0 4px 0 0;font-size:16px;cursor:pointer;">📊</button>
+        <span>PPHKM</span> 
+      </div>
+      -->
+    </div>
+  </div> 
+</details>
+      </div>
+    </div>
+    <!-- UPLOAD LAYER -->
+    <div class="acc-item">
+      <div class="acc-header" onclick="toggleAccPanel(this)">
+        <span>⬆️ <b>Unggah Peta Sementara</b></span>
+      </div>
+      <div class="acc-body">
+        <div id="upload-box">
+          <div style="margin:10px 0 5px 0;display:flex;align-items:center;">
+            <input type="file" id="input-layer" accept=".geojson,.json,.kml,.kmz"
+              style="font-size:13px;padding:3.5px 7px;border-radius:9px;border:1px solid #c5c9d3;background:#f6f8fa;margin-right:10px;" />
+            <span style="font-size:12px;color:#7b7e88;">KML, KMZ & GeoJSON</span>
+          </div>
+          <div id="upload-layer-list" style="margin-top:5px; font-size:13px;"></div>
+        </div>
+	    <hr style="margin:10px 0;">
+
+<button onclick="toggleKoordinatForm()" style="
+  background:none;
+  border:none;
+  color:#5c6bc0;
+  font-weight:600;
+  cursor:pointer;
+  padding:2px 0;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  gap:5px;
+">
+  <span style="font-size:16px;">➕</span> Tambah Titik Manual
+</button>
+
+<div id="koordinat-form" style="
+  display:none;
+  margin-top:12px;
+  padding:12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  background:#fafafa;
+  font-size:13px;
+">
+
+  <!-- Jenis koordinat -->
+  <div style="margin-bottom:10px;">
+    <label style="margin-right:15px;">
+      <input type="radio" name="coordType" value="wgs" checked> WGS84 (Lat, Lon)
+    </label>
+    <!-- <label>
+      <input type="radio" name="coordType" value="utm"> UTM
+    </label> -->
+  </div>
+
+  <!-- Input WGS -->
+  <div id="wgs-input" style="margin-bottom:10px; display:flex; flex-wrap:wrap; gap:6px;">
+    <div style="flex:1;">    
+      <input type="number" id="lat" step="any" placeholder="Latitude" style="width:100%; padding:6px; border:1px solid #ccc; border-radius:4px;">
+    </div>
+    <div style="flex:1;">
+       <input type="number" id="lon" step="any" placeholder="Longitude" style="width:100%; padding:6px; border:1px solid #ccc; border-radius:4px;">
+    </div>
+  </div>
+  
+  <!-- 
+<div id="utm-input" style="display:none; margin-bottom:10px;">
+
+ 
+  <div style="display:flex; gap:6px; margin-bottom:6px;">
+    <input type="number" id="zone" value="49" placeholder="Zona" 
+      style="width:50%; padding:6px; border:1px solid #ccc; border-radius:4px;">
+    <select id="hemisphere" 
+      style="width:50%; padding:6px; border:1px solid #ccc; border-radius:4px;">
+      <option value="N">Northern</option>
+      <option value="S">Southern</option>
+    </select>
+  </div>
+
+ 
+  <div style="display:flex; gap:6px;">
+    <input type="number" id="easting" step="any" placeholder="Easting" 
+      style="width:50%; padding:6px; border:1px solid #ccc; border-radius:4px;">
+    <input type="number" id="northing" step="any" placeholder="Northing" 
+      style="width:50%; padding:6px; border:1px solid #ccc; border-radius:4px;">
+  </div>
+</div>
+ -->
+<div style="display:flex; gap:6px; align-items:center; margin-top:10px; flex-wrap:wrap;">
+    
+
+    <button onclick="tambahTitikManual()" style="
+      padding:6px 10px;
+      background:#2a9d8f;
+      color:white;
+      border:none;
+      border-radius:6px;
+      font-weight:bold;
+    ">Zoom</button>
+
+    <button onclick="clearTitikManual()" style="
+      padding:6px 10px;
+      background:#b71c1c;
+      color:white;
+      border:none;
+      border-radius:6px;
+      font-weight:bold;
+    ">Hapus Semua</button>
+  </div>
+
+</div>
+</div>
+     
+    </div>
+    <!-- OVERLAP TOOLBOX -->
+    <div class="acc-item">
+      <div class="acc-header" onclick="toggleAccPanel(this)">
+        <span>🧩 <b>Analisa Tumpang Tindih</b></span>
+      </div>
+      <div class="acc-body">
+        <div id="overlap-toolbox" style="background:#f9fbfe; border:1.2px solid #b5c0d0; border-radius:10px; padding:11px 14px 13px 14px; max-width:450px; box-shadow:0 4px 16px #e1ecff; font-size:13px;">
+           <div style="display:flex;align-items:center;gap:8px;">
+            <select id="layerA" style="padding:4px 4px;font-size:12px;height:30px;border-radius:7px;border:1.3px solid #b5c0d0;min-width:90px;"></select>
+            <span style="font-size:15px;font-weight:bold;">∩</span>
+            <select id="layerB" style="padding:4px 4px;font-size:12px;height:30px;border-radius:7px;border:1.3px solid #b5c0d0;min-width:90px;"></select>
+            <button onclick="analyzeOverlap()" style="padding:5px 6px;border-radius:7px;background:#2ecc40;color:#fff;border:none;font-weight:600;cursor:pointer;">Analisa</button>
+            <button onclick="resetOverlap()" class="reset-btn" style="padding:5px 11px 5px 11px;border-radius:7px;">Reset</button>
+          </div>
+          <div id="overlap-result" style="margin-top:14px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Tombol Rekap Gabungan -->
+<button onclick="showRekapGabungan()" id="rekap-gabungan-btn" title="Rekap Gabungan" style="
+  position: absolute;
+  top: 20px;           /* disamakan dengan legend-toggle-btn */
+  right: 78px;         /* agar jaraknya pas di kiri tombol legend */
+  z-index: 1201;
+  padding: 6px 10px;
+  font-size: 18px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+">
+  📊
+</button>
+
+
+<button onclick="toggleLegend()" id="legend-toggle-btn" title="Tampilkan/Sembunyikan Legenda">📋</button>
+
+<!-- Letakkan ini TEPAT setelah tombol, jangan terpisah jauh -->
+<div id="legend-box" style="
+  position: absolute;
+  top: 70px; /* ↓ tepat di bawah tombol */
+  right: 28px;
+  z-index: 1000;
+  background: rgba(255,255,255,0.96);
+  padding: 12px;
+  border: 1.5px solid #bbb;
+  border-radius: 6px;
+  max-width: 320px;
+  max-height: 85%;
+  overflow-y: auto;
+  display: none;
+">
+  <div id="legend-content"></div>
+</div>
+
+  <img id="legend-img" src="" style="display:none">
+  <!-- MAP TOOLS BOX -->
+  <div id="opacity-slider-box" style="
+    position: absolute;
+    right: 38px;
+    bottom: 110px;
+    z-index: 1300;
+    background: #fff;
+    padding: 12px 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(26,115,232,0.08);
+    border: 1px solid #b5c0d0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;">
+    <input type="range" id="opacity-slider" min="0" max="100" value="70" step="1"
+      style="writing-mode: bt-lr; -webkit-appearance: slider-vertical; width: 28px; height: 120px;"
+      oninput="updateOpacityLabel(this.value)" onchange="setAllLayersOpacity(this.value)">
+    <span id="opacity-label" style="margin-top:8px;font-weight:bold;">70%</span>
+  </div>
+  <!-- POPUP & MODAL REKAP -->
+ <!-- MODAL REKAP, TARUH DI SINI, DI LUAR ACCORDION/FILTER-BOX -->
+<div id="rekap-modal" class="rekap-modal">
+  <div class="rekap-modal-content" id="rekap-modal-content">
+    <span class="rekap-modal-close" id="rekap-modal-close" title="Tutup">&times;</span>
+    <div id="rekap-modal-title" class="rekap-modal-title" style="cursor:move;">Rekap</div>
+    <div id="rekap-modal-body" class="rekap-modal-body"></div>
+  </div>
+</div>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>  
+  <script src="ol.js"></script>
+  <script>
+  proj4.defs("EPSG:32749", "+proj=utm +zone=49 +south +datum=WGS84 +units=m +no_defs");
+  proj4.defs("EPSG:32750", "+proj=utm +zone=50 +south +datum=WGS84 +units=m +no_defs");
+  ol.proj.proj4.register(proj4);
+  </script>	
+  <script>
+    const baseLayer = new ol.layer.Tile({
+      source: new ol.source.OSM()
+    });
+
+    let currentLayer;
+
+    const map = new ol.Map({
+      target: 'map',
+      layers: [baseLayer],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([110.4, -7.9]),
+        zoom: 8
+      })
+    });
+
+ // Setelah map dibuat
+window.measureVectorLayer = new ol.layer.Vector({
+  source: new ol.source.Vector(),
+  style: new ol.style.Style({
+    fill: new ol.style.Fill({ color: 'rgba(21,101,192,0.13)' }),  // biru transparan, ganti sesuai selera
+    stroke: new ol.style.Stroke({ color: '#1565c0', width: 2 }),
+    image: new ol.style.Circle({ radius: 7, fill: new ol.style.Fill({ color: '#1565c0' }) })
+  }),
+  zIndex: 8888 // pastikan di atas base layer, bisa lebih tinggi jika perlu
+});
+map.addLayer(window.measureVectorLayer);
+
+window.measureOverlays = [];
+
+    // Google Satellite (mirip Google Earth)
+const googleSatLayer = new ol.layer.Tile({
+  source: new ol.source.XYZ({
+    url: 'https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+    attributions: '© Google'
+  }),
+  visible: false // default tidak tampil
+});
+map.addLayer(googleSatLayer);
+
+const esriSatLayer = new ol.layer.Tile({
+  source: new ol.source.XYZ({
+    url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attributions: 'Tiles © Esri'
+  }),
+  visible: false
+});
+map.addLayer(esriSatLayer);
+// ...dan sesuaikan fungsi switchBaseLayer
+// Titik manual (koordinat dari input manual)
+const manualTitikSource = new ol.source.Vector();
+
+const manualTitikLayer = new ol.layer.Vector({
+  source: manualTitikSource,
+  style: new ol.style.Style({
+    image: new ol.style.Circle({
+      radius: 6,
+      fill: new ol.style.Fill({ color: '#2a9d8f' }), // warna hijau laut
+      stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
+    })
+  }),
+  zIndex: 5000
+});
+
+map.addLayer(manualTitikLayer);
+
+const provCenter = {
+  'YOGYA': [110.4091, -7.7956],    // Yogyakarta
+  'JATENG': [110.1403, -7.1500],   // Jawa Tengah
+  'JATIM': [112.7508, -7.5361],    // Jawa Timur
+  'WILKER': [111.1, -7.5]          // Titik tengah gabungan 3 provinsi, silakan sesuaikan
+};
+
+const kabCenter = {
+  'Cilacap': [108.9378, -7.4878],
+  'Sleman': [110.3354, -7.7325],
+  'Blora': [111.4131, -6.9676],
+  'Rembang': [111.3791, -6.7044],
+  'Grobogan': [110.9507, -7.0916],
+  'Magetan': [111.3566, -7.6536],
+  'Bojonegoro': [111.8832, -7.1524],
+  'Ngawi': [111.4036, -7.4033]
+};
+
+let fungHutnLayer = null;
+let pbphhLayer = null;
+let khdpkLayer = null;
+let foluJL_Layer = null;
+let ppkhLayer = null;
+let ppkhPemdaLayer = null;	  
+let khdtkLayer = null;
+let pphkmLayer = null;
+let pphdLayer = null;
+let pkkLayer = null;
+let pippibLayer = null;
+let piapsLayer = null;
+let haJatengLayer = null;
+let iphpsLayer = null;
+let highlightKHDTK = null;
+let perhutaniLayer = null;
+let ppkhexpLayer = null;
+
+window._overlapLayer = null;  // Global! (WAJIB)
+
+// Function to toggle accordion visibility
+function toggleAccPanel(el) {
+  const all = document.querySelectorAll('.acc-header');
+  
+  // Close all other accordions except the clicked one
+  all.forEach(h => {
+    if (h !== el) {
+      h.classList.remove('active');
+      if (h.nextElementSibling) {
+        h.nextElementSibling.style.display = "none";
+      }
+    }
+  });
+
+  // Toggle the current accordion
+  el.classList.toggle('active');
+  let body = el.nextElementSibling;
+
+  // Toggle display style between block (open) and none (closed)
+  if (body) {
+    if (body.style.display === "block") {
+      body.style.display = "none";
+    } else {
+      body.style.display = "block";
+    }
+  }
+}
+
+// By default, open the first accordion panel when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+  let first = document.querySelector('.acc-header');
+  if (first) {
+    first.classList.add('active');
+    if (first.nextElementSibling) {
+      first.nextElementSibling.style.display = "block";
+    }
+  }
+});
+	
+	
+const rekapModal = document.getElementById('rekap-modal');
+const rekapModalBody = document.getElementById('rekap-modal-body');
+const rekapModalTitle = document.getElementById('rekap-modal-title');
+document.getElementById('rekap-modal-close').onclick = () => { 
+  rekapModal.style.display = 'none';
+  // Opsional: kembalikan rekap ke slot asal jika ingin rekap tampil lagi di luar modal
+};
+
+window.onclick = function(e) {
+  if (e.target === rekapModal) rekapModal.style.display = 'none';
+};
+
+function showRekapGabungan() {
+  rekapModalTitle.textContent = "Rekap Gabungan";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Mengambil data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>";
+    return;
+  }
+
+  const layersToFetch = [
+    { name: "PBPHH_BPHL8", id: "Nama", luas: false, label: "PBPHH" },
+    { name: "IPHPS_BPHL8", id: "NAMA_PENGE", luas: true, label: "IPHPS" },
+    { name: "PPHKM_BPHL8", id: "NAMA_KELOM", luas: true, label: "HKM" },
+    { name: "PPHD_BPHL8", id: "NAMA_LD", luas: true, label: "HD" },
+    { name: "PKK_BPHL8", id: "NAMA_KELOM", luas: true, label: "KULIN KK" },
+    { name: "PPKH_EXP_JATIM", id: "NAMA_PPKH", luas: true, label: "PPKH Eksplorasi" },
+    { name: "PPKH_OP_BPHL8", id: "NAMA_PPKH", luas: true, label: "PPKH Operasional" },
+    { name: "PPKH_PEMDA", id: "Nama_IPPKH", luas: true, label: "PPKH Izin PEMDA", utm: "EPSG:32749" },
+    { name: "KHDTK_BPHL8", id: "NAMOBJ", luas: true, label: "KHDTK" },
+    { name: "KHDPK149_BPHL8", id: null, luas: true, label: "KHDPK" },
+    { name: "PERHUTANI", id: null, luas: true, label: "PERHUTANI" }
+  ];
+
+  let promises = layersToFetch.map(layer => {
+    let cql = `WADMPR='${provName}'`;
+    if (kab) cql += ` AND WADMKK='${kab}'`;
+
+    const url = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:${layer.name}&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+    return fetch(url)
+      .then(r => r.json())
+      .then(json => {
+        const format = new ol.format.GeoJSON();
+        const features = format.readFeatures(json, {
+          dataProjection: layer.utm || 'EPSG:4326',
+          featureProjection: 'EPSG:3857'
+        });
+
+        let uniqueSet = new Set();
+        let totalArea = 0;
+
+        features.forEach(f => {
+          if (layer.id) {
+            const val = f.get(layer.id);
+            if (val) uniqueSet.add(val);
+          }
+
+          if (layer.luas) {
+            const geom = f.getGeometry();
+            if (geom && geom.getType().includes('Polygon')) {
+              const area = ol.sphere.getArea(geom, { projection: 'EPSG:3857' });
+              totalArea += area;
+            }
+          }
+        });
+
+        return {
+          label: layer.label || layer.name,
+          jumlah: layer.id ? uniqueSet.size : null,
+          luas: layer.luas ? totalArea / 10000 : null
+        };
+      })
+      .catch(() => ({
+        label: layer.label || layer.name,
+        jumlah: layer.id ? 0 : null,
+        luas: layer.luas ? 0 : null
+      }));
+  });
+
+  Promise.all(promises).then(results => {
+    // ⬅ Tambahan Open Access
+    const getLuasByLabel = (label) => {
+      const found = results.find(r => r.label === label);
+      return found?.luas || 0;
+    };
+
+    const luasKHDPK = getLuasByLabel("KHDPK");
+    const pengurang = [
+      "HD", "HKM", "IPHPS",
+      "PPKH Eksplorasi", "PPKH Operasional", "PPKH Izin PEMDA", "KHDTK"
+    ].map(getLuasByLabel).reduce((a, b) => a + b, 0);
+
+    const luasOpenAccess = Math.max(0, luasKHDPK - pengurang);
+    results.push({
+      label: "Open Access",
+      jumlah: null,
+      luas: luasOpenAccess
+    });
+
+    // Buat HTML
+    let html = `
+      <div style="max-height:240px;overflow-y:auto;">
+      <table border="1" style="border-collapse:collapse; font-size:13px; margin-top:5px; min-width:320px;">
+      <tr><th>No</th><th>Skema Pengelolaan</th><th>Jumlah</th><th>Luas (Ha)</th></tr>`;
+
+    results.forEach((r, i) => {
+      html += `<tr>
+        <td>${i + 1}</td>
+        <td>${r.label}</td>
+        <td style="text-align:center;">${r.jumlah ?? '-'}</td>
+        <td style="text-align:right;">${r.luas != null ? r.luas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</td>
+      </tr>`;
+    });
+
+    html += `</table></div>`;
+    rekapModalBody.innerHTML = html;
+  });
+}
+
+function toggleKoordinatForm() {
+  const form = document.getElementById('koordinat-form');
+  form.style.display = (form.style.display === 'none') ? 'block' : 'none';
+}
+
+document.querySelectorAll('input[name="coordType"]').forEach(el => {
+  el.addEventListener('change', function () {
+    document.getElementById('wgs-input').style.display = this.value === 'wgs' ? 'block' : 'none';
+    document.getElementById('utm-input').style.display = this.value === 'utm' ? 'block' : 'none';
+  });
+});
+
+let lastManualFeature = null;
+
+function tambahTitikManual() {
+  const nama = "Titik Manual";
+  let lon, lat;
+  const type = document.querySelector('input[name="coordType"]:checked').value;
+
+  if (type === 'wgs') {
+    lat = parseFloat(document.getElementById('lat').value);
+    lon = parseFloat(document.getElementById('lon').value);
+  } else {
+    const zone = parseInt(document.getElementById('zone').value);
+    const easting = parseFloat(document.getElementById('easting').value);
+    const northing = parseFloat(document.getElementById('northing').value);
+    const hemisphere = document.getElementById('hemisphere').value;
+    const result = utmToLatLon(easting, northing, zone, hemisphere);
+    lat = result.lat;
+    lon = result.lon;
+  }
+
+  const geometry = new ol.geom.Point(ol.proj.fromLonLat([lon, lat]));
+  const feature = new ol.Feature({ geometry, name: nama });
+
+  manualTitikSource.addFeature(feature);
+  lastManualFeature = feature;
+
+  // Zoom otomatis ke titik baru
+  map.getView().fit(geometry, { maxZoom: 16, duration: 800 });
+}
+
+function zoomToTitikTerakhir() {
+  if (lastManualFeature) {
+    const geom = lastManualFeature.getGeometry();
+    map.getView().fit(geom, { maxZoom: 16, duration: 800 });
+  } else {
+    alert("Belum ada titik.");
+  }
+}
+
+function clearTitikManual() {
+  manualTitikSource.clear();
+  lastManualFeature = null;
+}
+
+
+function utmToLatLon(easting, northing, zoneNumber, hemisphere) {
+  const projStr = `+proj=utm +zone=${zoneNumber} +datum=WGS84 +units=m ${hemisphere === 'S' ? '+south' : ''}`;
+  const [lon, lat] = proj4(projStr, 'EPSG:4326', [easting, northing]);
+  return { lat, lon };
+}
+
+function toggleLegend() {
+  const legend = document.getElementById('legend-box');
+  const btn = document.getElementById('legend-toggle-btn');
+  const isHidden = legend.style.display === 'none' || legend.style.display === '';
+  legend.style.display = isHidden ? 'block' : 'none';
+  btn.innerText = isHidden ? '📕' : '📋'; // Ikon berubah
+}
+
+// --- Fungsi untuk KHDPK
+function showRekapModalKhdpk() {
+  rekapModalTitle.textContent = "Rekap KHDPK";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>"; return;
+  }
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:KHDPK149_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data KHDPK untuk wilayah ini.</i>';
+        return;
+      }
+      let hasil = {};
+      let total = 0;
+      features.forEach(f => {
+        const kriteria = f.get('KRITERIA') || '-';
+        let luas = f.getGeometry() ? ol.sphere.getArea(f.getGeometry(), {projection:'EPSG:3857'})/10000 : 0;
+        if (!hasil[kriteria]) hasil[kriteria] = 0;
+        hasil[kriteria] += luas;
+        total += luas;
+      });
+      let html = `
+      <div style="max-height:180px;overflow-y:auto;">
+      <table border="1" style="border-collapse:collapse; font-size:13px; margin-top:5px;">
+      <tr><th>No</th><th>Kriteria</th><th>Kalkulasi Luas (ha)</th></tr>`;
+      Object.entries(hasil).forEach(([kriteria, luas], i) => {
+        html += `<tr>
+          <td>${i+1}</td>
+          <td>${kriteria}</td>
+          <td style="text-align:right;">${luas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+        </tr>`;
+      });
+      html += `<tr style="background-color:#e0f8e0;">
+        <td colspan="2"><b>Total</b></td>
+        <td style="text-align:right;"><b>${total.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2})}</b></td>
+      </tr></table></div>`;
+      rekapModalBody.innerHTML = html;
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data KHDPK.</i>';
+    });
+}
+
+function toggleAccPanel(el) {
+  const all = document.querySelectorAll('.acc-header');
+  all.forEach(h => {
+    if (h !== el) {
+      h.classList.remove('active');
+      if (h.nextElementSibling) h.nextElementSibling.style.display = "none";
+    }
+  });
+  el.classList.toggle('active');
+  let body = el.nextElementSibling;
+  if (body) body.style.display = (body.style.display === "block") ? "none" : "block";
+}
+
+function toggleAccordionPanel() {
+  const panel = document.getElementById('accordion-panel');
+  panel.style.display = (panel.style.display === 'none') ? 'block' : 'none';
+}
+
+function showRekapModalPerhutani() {
+  rekapModalTitle.textContent = "Rekap PERHUTANI";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>"; return;
+  }
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:PERHUTANI&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data Perhutani untuk wilayah ini.</i>';
+        return;
+      }
+      let hasil = {};
+      let total = 0;
+      features.forEach(f => {
+        const fungsi = f.get('FUNGSIKWS_') || '-';
+        let luas = f.getGeometry() ? ol.sphere.getArea(f.getGeometry(), {projection:'EPSG:3857'})/10000 : 0;
+        if (!hasil[fungsi]) hasil[fungsi] = 0;
+        hasil[fungsi] += luas;
+        total += luas;
+      });
+      let html = `
+      <div style="max-height:180px;overflow-y:auto;">
+      <table border="1" style="border-collapse:collapse; font-size:13px; margin-top:5px;">
+      <tr><th>No</th><th>Fungsi</th><th> Kalkulasi Luas (ha)</th></tr>`;
+      Object.entries(hasil).forEach(([fungsi, luas], i) => {
+        html += `<tr>
+          <td>${i+1}</td>
+          <td>${fungsi}</td>
+          <td style="text-align:right;">${luas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+      });
+      html += `<tr style="background-color:#e0f8e0;">
+        <td colspan="2"><b>Total</b></td>
+        <td style="text-align:right;"><b>${total.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+      </tr></table></div>`;
+      rekapModalBody.innerHTML = html;
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data Perhutani.</i>';
+    });
+}
+
+
+
+// 2. FOLU JL
+function showRekapModalFOLUJL() {
+  rekapModalTitle.textContent = "Rekap FOLU Prioritas JASLING";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>"; return;
+  }
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:FOLU_JL_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data FOLU JL untuk wilayah ini.</i>';
+        return;
+      }
+      let hasil = {};
+      let total = 0;
+      features.forEach(f => {
+        const renops = f.get('RENOPS_JAW') || '-';
+        let luas = f.getGeometry() ? ol.sphere.getArea(f.getGeometry(), {projection:'EPSG:3857'})/10000 : 0;
+        if (!hasil[renops]) hasil[renops] = 0;
+        hasil[renops] += luas;
+        total += luas;
+      });
+      let html = `
+      <div style="max-height:180px;overflow-y:auto;">
+      <table border="1" style="border-collapse:collapse; font-size:13px; margin-top:5px;">
+      <tr><th>No</th><th>RENOPS</th><th>Kalkulasi Luas (ha)</th></tr>`;
+      Object.entries(hasil).forEach(([renops, luas], i) => {
+        html += `<tr>
+          <td>${i+1}</td>
+          <td>${renops}</td>
+          <td style="text-align:right;">${luas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+      });
+      html += `<tr style="background-color:#e0f8e0;">
+        <td colspan="2"><b>Total</b></td>
+        <td style="text-align:right;"><b>${total.toLocaleString('id-ID', { minimumFractionDigits: 2 })}</b></td>
+      </tr></table></div>`;
+      rekapModalBody.innerHTML = html;
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data FOLU JL.</i>';
+    });
+}
+
+// 3. IPHPS
+function showRekapModalIphps() {
+  rekapModalTitle.textContent = "Rekap IPHPS";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>";
+    return;
+  }
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:IPHPS_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data IPHPS untuk wilayah ini.</i>';
+        return;
+      }
+      let totalLuasSK = 0, totalLuas = 0;
+      let html = `
+      <div class="rekap-table-scroll">
+        <table class="rekap-modal-table">
+          <thead>
+            <tr>
+              <th class="nomor" style="width:40px;">No</th>
+              <th style="width:170px;">Kelompok</th>
+              <th style="width:110px;">Desa</th>
+              <th class="angka" style="width:110px;">Luas SK (ha)</th>
+              <th class="angka" style="width:130px;">Kalkulasi Luas (ha)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      features.forEach((f,i) => {
+        const kelompok = f.get('NAMA_KELOM') || '-';
+        const desa = f.get('NAMA_DESA') || '-';
+        const luasSK = parseFloat(f.get('LUAS_IPHPS')) || 0;
+        const luasGeom = ol.sphere.getArea(f.getGeometry(), {projection:'EPSG:3857'}) / 10000;
+        totalLuasSK += luasSK;
+        totalLuas += luasGeom;
+        html += `<tr class="rekap-iphps-row" data-nama="${kelompok.replace(/"/g, '&quot;')}">
+          <td class="nomor">${i+1}</td>
+          <td><a href="#" class="zoom-iphps" data-idx="${i}">${kelompok}</a></td>
+          <td>${desa}</td>
+          <td class="angka">${luasSK.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</td>
+          <td class="angka">${luasGeom.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</td>
+        </tr>`;
+      });
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"><b>Total</b></td>
+              <td class="angka"><b>${totalLuasSK.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</b></td>
+              <td class="angka"><b>${totalLuas.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</b></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>`;
+      rekapModalBody.innerHTML = html;
+
+      // Event listener zoom & highlight
+      rekapModalBody.querySelectorAll('.zoom-iphps').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const idx = parseInt(this.dataset.idx, 10);
+          const feature = features[idx];
+          if (feature) {
+            const extent = feature.getGeometry().getExtent();
+            map.getView().fit(extent, { padding:[40,40,40,40], duration:800, maxZoom:16 });
+            rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row => row.classList.remove('rekap-highlight-row'));
+            const kelompok = feature.get('NAMA_KELOM') || '-';
+            const row = rekapModalBody.querySelector(`.rekap-iphps-row[data-nama="${kelompok.replace(/"/g, '&quot;')}"]`);
+            if (row) row.classList.add('rekap-highlight-row');
+          }
+        });
+      });
+    })
+    .catch(() => { rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data IPHPS.</i>'; });
+}
+
+// 4. KHDTK
+function showRekapModalKHDTK() {
+  rekapModalTitle.textContent = "Rekap KHDTK";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>";
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:KHDTK_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data KHDTK untuk wilayah ini.</i>';
+        return;
+      }
+      let totalLuasSK = 0, totalLuas = 0;
+      let html = `
+      <div class="rekap-table-scroll">
+        <table class="rekap-modal-table">
+          <thead>
+            <tr>
+              <th class="nomor" style="width:40px;">No</th>
+              <th style="width:170px;">Nama</th>
+              <th style="width:130px;">Pengelola</th>
+              <th class="angka" style="width:110px;">Luas SK (ha)</th>
+              <th class="angka" style="width:130px;">Kalkulasi Luas (ha)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      features.forEach((f, i) => {
+        const nama = f.get('NAMOBJ') || '-';
+        const pengelola = f.get('PNGLOL') || '-';
+        const luasSK = parseFloat(f.get('LSSK')) || 0;
+        // Kalkulasi luas poligon/geometry (meter ke hektar)
+        let luas = 0;
+        if (f.getGeometry()) {
+          luas = ol.sphere.getArea(f.getGeometry(), { projection: 'EPSG:3857' }) / 10000;
+        }
+        totalLuasSK += luasSK;
+        totalLuas += luas;
+        html += `<tr class="rekap-khdtk-row" data-nama="${nama.replace(/"/g, '&quot;')}">
+          <td class="nomor">${i + 1}</td>
+          <td><a href="#" class="zoom-khdtk" data-idx="${i}">${nama}</a></td>
+          <td>${pengelola}</td>
+          <td class="angka">${luasSK.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td class="angka">${luas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+      });
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"><b>Total</b></td>
+              <td class="angka"><b>${totalLuasSK.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+              <td class="angka"><b>${totalLuas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>`;
+
+      rekapModalBody.innerHTML = html;
+
+      // Event listener untuk zoom & highlight (modal)
+      rekapModalBody.querySelectorAll('.zoom-khdtk').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const idx = parseInt(this.dataset.idx, 10);
+          const feature = features[idx];
+          if (feature) {
+            const extent = feature.getGeometry().getExtent();
+            map.getView().fit(extent, { padding: [40,40,40,40], duration: 800, maxZoom: 16 });
+            // Highlight di peta
+            if (window.highlightKHDTK) map.removeLayer(window.highlightKHDTK);
+            window.highlightKHDTK = new ol.layer.Vector({
+              source: new ol.source.Vector({ features: [feature] }),
+              style: new ol.style.Style({
+                stroke: new ol.style.Stroke({ color: '#ff0000', width: 4 }),
+                fill: new ol.style.Fill({ color: 'rgba(255,0,0,0.08)' })
+              }),
+              zIndex: 9999
+            });
+            map.addLayer(window.highlightKHDTK);
+            setTimeout(() => {
+              if (window.highlightKHDTK) {
+                map.removeLayer(window.highlightKHDTK);
+                window.highlightKHDTK = null;
+              }
+            }, 3000);
+
+            // Highlight di tabel modal
+            rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row => row.classList.remove('rekap-highlight-row'));
+            const nama = feature.get('NAMOBJ') || '-';
+            const row = rekapModalBody.querySelector(`.rekap-khdtk-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
+            if (row) row.classList.add('rekap-highlight-row');
+          }
+        });
+      });
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data KHDTK.</i>';
+    });
+}
+
+// 5. PBPHH
+function showRekapModalPBPHH() {
+  rekapModalTitle.textContent = "Rekap PBPHH";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>"; return;
+  }
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:PBPHH_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data PBPHH untuk wilayah ini.</i>';
+        return;
+      }
+
+      const rekap = {};
+      let total = 0;
+
+      features.forEach(f => {
+        if (!f || !f.get) return;
+        const skala = f.get('Skala_Usah') || '-';
+        if (!rekap[skala]) rekap[skala] = 0;
+        rekap[skala]++;
+        total++;
+      });
+
+      let html = `
+        <div style="overflow-x:auto;">
+        <table border="1" style="border-collapse:collapse; font-size:13px; margin-top:5px;">
+          <tr><th>No</th><th>Skala Usaha</th><th>Jumlah</th></tr>`;
+      let i = 1;
+      for (const [skala, count] of Object.entries(rekap)) {
+        html += `<tr><td>${i++}</td><td>${skala}</td><td>${count}</td></tr>`;
+      }
+      html += `<tr style="background-color:#e0f8e0;"><td colspan="2"><b>Total</b></td><td><b>${total}</b></td></tr>`;
+      html += '</table></div>';
+
+      rekapModalBody.innerHTML = html;
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data PBPHH.</i>';
+    });
+}
+
+
+// 6. PIAPS9
+function showRekapModalPIAPS9() {
+  rekapModalTitle.textContent = "Rekap PIAPS Rev. IX";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>"; return;
+  }
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:PIAPS9_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data PIAPS IX untuk wilayah ini.</i>';
+        return;
+      }
+      let hasil = {};
+      let total = 0;
+      features.forEach(f => {
+        const kriteria = f.get('Kriteria') || '-';
+        let luas = f.getGeometry() ? ol.sphere.getArea(f.getGeometry(), {projection:'EPSG:3857'})/10000 : 0;
+        if (!hasil[kriteria]) hasil[kriteria] = 0;
+        hasil[kriteria] += luas;
+        total += luas;
+      });
+      let html = `
+      <div style="max-height:180px;overflow-y:auto;">
+      <table border="1" style="border-collapse:collapse; font-size:13px; margin-top:5px;">
+      <tr><th>No</th><th>Kriteria</th><th>Kalkulasi Luas (ha)</th></tr>`;
+      Object.entries(hasil).forEach(([kriteria, luas], i) => {
+        html += `<tr>
+          <td>${i+1}</td>
+          <td>${kriteria}</td>
+          <td style="text-align:right;">${luas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+      });
+      html += `<tr style="background-color:#e0f8e0;">
+        <td colspan="2"><b>Total</b></td>
+        <td style="text-align:right;"><b>${total.toLocaleString('id-ID', { minimumFractionDigits: 2 })}</b></td>
+      </tr></table></div>`;
+      rekapModalBody.innerHTML = html;
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data PIAPS IX.</i>';
+    });
+}
+
+// 7. PIPPIB2025
+function showRekapModalPIPPIB2025() {
+  rekapModalTitle.textContent = "Rekap PIPPIB 2025";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>"; return;
+  }
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:PIPPIB2025_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data PIPPIB 2025 untuk wilayah ini.</i>';
+        return;
+      }
+      let hasil = {};
+      let total = 0;
+      features.forEach(f => {
+        const pippib = f.get('PIPPIB') || '-';
+        let luas = f.getGeometry() ? ol.sphere.getArea(f.getGeometry(), {projection:'EPSG:3857'})/10000 : 0;
+        if (!hasil[pippib]) hasil[pippib] = 0;
+        hasil[pippib] += luas;
+        total += luas;
+      });
+      let html = `
+      <div style="max-height:180px;overflow-y:auto;">
+      <table border="1" style="border-collapse:collapse; font-size:13px; margin-top:5px;">
+      <tr><th>No</th><th>PIPPIB</th><th>Kalkulasi Luas (ha)</th></tr>`;
+      Object.entries(hasil).forEach(([pippib, luas], i) => {
+        html += `<tr>
+          <td>${i+1}</td>
+          <td>${pippib}</td>
+          <td style="text-align:right;">${luas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+      });
+      html += `<tr style="background-color:#e0f8e0;">
+        <td colspan="2"><b>Total</b></td>
+        <td style="text-align:right;"><b>${total.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+      </tr></table></div>`;
+      rekapModalBody.innerHTML = html;
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data PIPPIB 2025.</i>';
+    });
+}
+
+
+// 8. PKK
+function showRekapModalPkk() {
+  // Tampilkan modal dan loading
+  rekapModalTitle.textContent = "Rekap KULIN KK";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  // Ambil prov/kab sekarang
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>";
+    return;
+  }
+
+  // Compose CQL filter dan URL WFS
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:PKK_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data PKK untuk wilayah ini.</i>';
+        return;
+      }
+      let totalLuasSK = 0, totalLuas = 0;
+      let html = `
+      <div class="rekap-table-scroll">
+        <table class="rekap-modal-table">
+          <thead>
+            <tr>
+              <th class="nomor" style="width:40px;">No</th>
+              <th style="width:170px;">Nama</th>
+              <th style="width:110px;">Desa</th>
+              <th class="angka" style="width:110px;">Luas SK (ha)</th>
+              <th class="angka" style="width:130px;">Kalkulasi Luas (ha)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      features.forEach((f, i) => {
+        const nama = f.get('NAMA_KELOM') || '-';
+        const desa = f.get('NAMA_DESA') || '-';
+        const luasSK = parseFloat(f.get('LUAS_PKK')) || 0;
+        const luas = parseFloat(f.get('LUAS_1')) || 0;
+        totalLuasSK += luasSK;
+        totalLuas += luas;
+        html += `<tr class="rekap-pkk-row" data-nama="${nama.replace(/"/g, '&quot;')}">
+          <td class="nomor">${i + 1}</td>
+          <td><a href="#" class="zoom-pkk" data-idx="${i}">${nama}</a></td>
+          <td>${desa}</td>
+          <td class="angka">${luasSK.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td class="angka">${luas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+      });
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"><b>Total</b></td>
+              <td class="angka"><b>${totalLuasSK.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+              <td class="angka"><b>${totalLuas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      `;
+      rekapModalBody.innerHTML = html;
+
+      // Event listener zoom & highlight (modal)
+      rekapModalBody.querySelectorAll('.zoom-pkk').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const idx = parseInt(this.dataset.idx, 10);
+          const feature = features[idx];
+          if (feature) {
+            const extent = feature.getGeometry().getExtent();
+            map.getView().fit(extent, { padding: [40,40,40,40], duration: 800, maxZoom: 16 });
+            rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row => row.classList.remove('rekap-highlight-row'));
+            const nama = feature.get('NAMA_KELOM') || '-';
+            const row = rekapModalBody.querySelector(`.rekap-pkk-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
+            if (row) row.classList.add('rekap-highlight-row');
+          }
+        });
+      });
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data PKK.</i>';
+    });
+}
+
+// 9. PPHD
+function showRekapModalPphd() {
+  rekapModalTitle.textContent = "Rekap PPHD";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>"; return;
+  }
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:PPHD_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data PPHD untuk wilayah ini.</i>'; return;
+      }
+      let totalLuasSK = 0, totalLuas = 0;
+      let html = `
+      <div class="rekap-table-scroll">
+        <table class="rekap-modal-table">
+          <thead>
+            <tr>
+              <th class="nomor" style="width:40px;">No</th>
+              <th style="width:160px;">Lembaga Desa</th>
+              <th class="angka" style="width:110px;">Luas SK (ha)</th>
+              <th class="angka" style="width:130px;">Kalkulasi Luas (ha)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      features.forEach((f, i) => {
+        const nama = f.get('NAMA_LD') || '-';
+        const luasSK = parseFloat(f.get('LUAS_PPHD')) || 0;
+        const luasGeom = ol.sphere.getArea(f.getGeometry(), {projection:'EPSG:3857'}) / 10000;
+        totalLuasSK += luasSK;
+        totalLuas += luasGeom;
+        html += `<tr class="rekap-pphd-row" data-nama="${nama.replace(/"/g, '&quot;')}">
+          <td class="nomor">${i+1}</td>
+          <td><a href="#" class="zoom-pphd" data-idx="${i}">${nama}</a></td>
+          <td class="angka">${luasSK.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</td>
+          <td class="angka">${luasGeom.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</td>
+        </tr>`;
+      });
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2"><b>Total</b></td>
+              <td class="angka"><b>${totalLuasSK.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</b></td>
+              <td class="angka"><b>${totalLuas.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</b></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      `;
+      rekapModalBody.innerHTML = html;
+
+      // Zoom & highlight pada klik nama
+      rekapModalBody.querySelectorAll('.zoom-pphd').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const idx = parseInt(this.dataset.idx, 10);
+          const feature = features[idx];
+          if (feature) {
+            const extent = feature.getGeometry().getExtent();
+            map.getView().fit(extent, { padding:[40,40,40,40], duration:800, maxZoom:16 });
+            rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row => row.classList.remove('rekap-highlight-row'));
+            const nama = feature.get('NAMA_LD') || '-';
+            const row = rekapModalBody.querySelector(`.rekap-pphd-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
+            if (row) row.classList.add('rekap-highlight-row');
+          }
+        });
+      });
+    })
+    .catch(() => { rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data PPHD.</i>'; });
+}
+
+// 10. PPHKM
+function showRekapModalPphkm() {
+  rekapModalTitle.textContent = "Rekap PPHKM";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>";
+    return;
+  }
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:PPHKM_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data PPHKM untuk wilayah ini.</i>';
+        return;
+      }
+      let totalLuasSK = 0, totalLuas = 0;
+      let html = `
+      <div class="rekap-table-scroll">
+        <table class="rekap-modal-table">
+          <thead>
+            <tr>
+              <th class="nomor" style="width:40px;">No</th>
+              <th style="width:160px;">Nama Kelompok</th>
+              <th style="width:110px;">Desa</th>
+              <th class="angka" style="width:110px;">Luas SK (ha)</th>
+              <th class="angka" style="width:130px;">Kalkulasi Luas (ha)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      features.forEach((f, i) => {
+        const nama = f.get('NAMA_KELOM') || '-';
+        const desa = f.get('NAMA_DESA') || '-';
+        const luasSK = parseFloat(f.get('LUAS_PPHKM')) || 0;
+        const luas = parseFloat(f.get('LUAS')) || 0;
+        totalLuasSK += luasSK;
+        totalLuas += luas;
+        html += `<tr class="rekap-pphkm-row" data-nama="${nama.replace(/"/g, '&quot;')}">
+          <td class="nomor">${i + 1}</td>
+          <td><a href="#" class="zoom-pphkm" data-idx="${i}">${nama}</a></td>
+          <td>${desa}</td>
+          <td class="angka">${luasSK.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td class="angka">${luas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+      });
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"><b>Total</b></td>
+              <td class="angka"><b>${totalLuasSK.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+              <td class="angka"><b>${totalLuas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      `;
+      rekapModalBody.innerHTML = html;
+
+      // Event listener zoom & highlight
+      rekapModalBody.querySelectorAll('.zoom-pphkm').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const idx = parseInt(this.dataset.idx, 10);
+          const feature = features[idx];
+          if (feature) {
+            const extent = feature.getGeometry().getExtent();
+            map.getView().fit(extent, { padding: [40,40,40,40], duration: 800, maxZoom: 16 });
+            rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row => row.classList.remove('rekap-highlight-row'));
+            const nama = feature.get('NAMA_KELOM') || '-';
+            const row = rekapModalBody.querySelector(`.rekap-pphkm-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
+            if (row) row.classList.add('rekap-highlight-row');
+          }
+        });
+      });
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data PPHKM.</i>';
+    });
+}
+
+// 11. PPKH_EXP
+function showRekapModalPPKHExp() {
+  rekapModalTitle.textContent = "Rekap PPKH Eksplorasi";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>";
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:PPKH_EXP_JATIM&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data PPKH Eksplorasi untuk wilayah ini.</i>';
+        return;
+      }
+
+      let totalLuasSK = 0, totalLuas = 0;
+      let html = `
+      <div style="overflow-x:auto;">
+      <table border="1" style="border-collapse:collapse; font-size:13px; margin-top:5px; min-width:700px;">
+        <tr>
+          <th class="nomor">No</th>
+          <th>Nama</th>
+          <th>Jenis</th>
+          <th>SK PPKH</th>
+          <th class="angka">Luas SK (ha)</th>
+          <th class="angka">Kalkulasi Luas (ha)</th>
+        </tr>`;
+
+      features.forEach((f, i) => {
+        const nama = f.get('NAMA_PPKH') || '-';
+        const jenis = f.get('JENIS_PPKH') || '-';
+        const skppkh = f.get('NO_PPKH') || '-';
+        const luasSK = parseFloat(f.get('LUAS_PPKH')) || 0;
+        const luas = parseFloat(f.get('LUAS')) || 0;
+
+        totalLuasSK += luasSK;
+        totalLuas += luas;
+
+        html += `<tr class="rekap-ppkhexp-row" data-nama="${nama.replace(/"/g, '&quot;')}">
+          <td class="nomor">${i + 1}</td>
+          <td><a href="#" class="zoom-ppkhexp" data-idx="${i}">${nama}</a></td>
+          <td>${jenis}</td>
+          <td>${skppkh}</td>
+          <td class="angka">${luasSK.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td class="angka">${luas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+      });
+
+      html += `<tr style="background-color:#e0f8e0;">
+        <td colspan="4"><b>Total</b></td>
+        <td class="angka"><b>${totalLuasSK.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+        <td class="angka"><b>${totalLuas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+      </tr></table></div>`;
+
+      rekapModalBody.innerHTML = html;
+
+      // Zoom & highlight
+      rekapModalBody.querySelectorAll('.zoom-ppkhexp').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const idx = parseInt(this.dataset.idx, 10);
+          const feature = features[idx];
+          if (feature) {
+            const extent = feature.getGeometry().getExtent();
+            map.getView().fit(extent, { padding: [40,40,40,40], duration: 800, maxZoom: 16 });
+            rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row => row.classList.remove('rekap-highlight-row'));
+            const nama = feature.get('NAMA_PPKH') || '-';
+            const row = rekapModalBody.querySelector(`.rekap-ppkhexp-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
+            if (row) row.classList.add('rekap-highlight-row');
+          }
+        });
+      });
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data PPKH Eksplorasi.</i>';
+    });
+}
+
+
+// 12. PPKH_OP
+function showRekapModalPpkh() {
+  rekapModalTitle.textContent = "Rekap PPKH Operasional";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>"; return;
+  }
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:PPKH_OP_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, { dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857' });
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data PPKH OP untuk wilayah ini.</i>'; return;
+      }
+      let totalLuasSK = 0, totalLuas = 0;
+      let html = `
+      <div class="rekap-table-scroll">
+        <table class="rekap-modal-table">
+          <thead>
+            <tr>
+              <th class="nomor" style="width:40px;">No</th>
+              <th style="width:180px;">Nama</th>
+              <th style="width:80px;">Jenis</th>
+              <th class="angka" style="width:110px;">Luas SK (ha)</th>
+              <th class="angka" style="width:130px;">Kalkulasi Luas (ha)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      features.forEach((f,i) => {
+        const nama = f.get('NAMA_PPKH') || '-';
+        const jenis = f.get('JENIS_PPKH') || '-';
+        const luasSK = parseFloat(f.get('LUAS_PPKH')) || 0;
+        const luasGeom = ol.sphere.getArea(f.getGeometry(), {projection:'EPSG:3857'}) / 10000;
+        totalLuasSK += luasSK;
+        totalLuas += luasGeom;
+        html += `<tr class="rekap-ppkh-row" data-nama="${nama.replace(/"/g, '&quot;')}">
+          <td class="nomor">${i+1}</td>
+          <td><a href="#" class="zoom-ppkh" data-idx="${i}">${nama}</a></td>
+          <td>${jenis}</td>
+          <td class="angka">${luasSK.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</td>
+          <td class="angka">${luasGeom.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</td>
+        </tr>`;
+      });
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"><b>Total</b></td>
+              <td class="angka"><b>${totalLuasSK.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</b></td>
+              <td class="angka"><b>${totalLuas.toLocaleString('id-ID',{minimumFractionDigits:2, maximumFractionDigits: 2})}</b></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      `;
+      rekapModalBody.innerHTML = html;
+
+      // Highlight & zoom ke fitur jika klik nama
+      rekapModalBody.querySelectorAll('.zoom-ppkh').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const idx = parseInt(this.dataset.idx, 10);
+          const feature = features[idx];
+          if (feature) {
+            const extent = feature.getGeometry().getExtent();
+            map.getView().fit(extent, { padding:[40,40,40,40], duration:800, maxZoom:16 });
+            rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row => row.classList.remove('rekap-highlight-row'));
+            const nama = feature.get('NAMA_PPKH') || '-';
+            const row = rekapModalBody.querySelector(`.rekap-ppkh-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
+            if (row) row.classList.add('rekap-highlight-row');
+          }
+        });
+      });
+    })
+    .catch(() => { rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data PPKH OP.</i>'; });
+}
+
+// 13. PPKH_PEMDA
+function showRekapModalPPKHPemda() {
+  rekapModalTitle.textContent = "Rekap PPKH PEMDA";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>";
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:PPKH_PEMDA&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, {
+        dataProjection: 'EPSG:32749',  // <<=== Perbaikan penting di sini
+        featureProjection: 'EPSG:3857'
+      });
+
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data PPKH PEMDA untuk wilayah ini.</i>';
+        return;
+      }
+
+      let totalLuasSK = 0, totalLuas = 0;
+      let html = `
+      <div class="rekap-table-scroll">
+        <table class="rekap-modal-table">
+          <thead>
+            <tr>
+              <th class="nomor" style="width:40px;">No</th>
+              <th style="width:180px;">Nama</th>
+              <th style="width:80px;">Peruntukan</th>
+              <th class="angka" style="width:110px;">Luas SK (ha)</th>
+              <th class="angka" style="width:130px;">Kalkulasi Luas (ha)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      features.forEach((f, i) => {
+        const nama = f.get('Nama_IPPKH') || '-';
+        const Peruntukan = f.get('Peruntukan') || '-';
+        const luasSK = parseFloat(f.get('LUAS_PPKH')) || 0;
+
+        // Perhitungan luas menggunakan EPSG:32749 (dalam meter persegi → ha)
+        const geom = f.getGeometry().clone().transform('EPSG:3857', 'EPSG:32749');
+        const luasGeom = ol.sphere.getArea(geom) / 10000;
+
+        totalLuasSK += luasSK;
+        totalLuas += luasGeom;
+
+        html += `<tr class="rekap-ppkhpemda-row" data-nama="${nama.replace(/"/g, '&quot;')}">
+          <td class="nomor">${i + 1}</td>
+          <td><a href="#" class="zoom-ppkh" data-idx="${i}">${nama}</a></td>
+          <td>${Peruntukan}</td>
+          <td class="angka">${luasSK.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          <td class="angka">${luasGeom.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
+      });
+
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3"><b>Total</b></td>
+              <td class="angka"><b>${totalLuasSK.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+              <td class="angka"><b>${totalLuas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>`;
+
+      rekapModalBody.innerHTML = html;
+
+      // Zoom dan highlight baris
+      rekapModalBody.querySelectorAll('.zoom-ppkh').forEach(link => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          const idx = parseInt(this.dataset.idx, 10);
+          const feature = features[idx];
+          if (feature) {
+            const extent = feature.getGeometry().getExtent();
+            map.getView().fit(extent, { padding: [40, 40, 40, 40], duration: 800, maxZoom: 16 });
+
+            rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row => {
+              row.classList.remove('rekap-highlight-row');
+            });
+
+            const nama = feature.get('Nama_IPPKH') || '-';
+            const row = rekapModalBody.querySelector(`.rekap-ppkhpemda-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
+            if (row) row.classList.add('rekap-highlight-row');
+          }
+        });
+      });
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data PPKH PEMDA.</i>';
+    });
+}
+
+	  
+	  
+(function() {
+  const modal = document.getElementById('rekap-modal-content');
+  const handle = document.getElementById('rekap-modal-title');
+  let offsetX = 0, offsetY = 0, isDragging = false;
+
+  handle.onmousedown = function(e) {
+    isDragging = true;
+    // Ambil posisi awal kursor & modal
+    const rect = modal.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    // Set modal ke absolute agar bisa digeser
+    modal.style.position = 'fixed';
+    modal.style.margin = '0';
+    document.onmousemove = function(ev) {
+      if (!isDragging) return;
+      modal.style.left = (ev.clientX - offsetX) + 'px';
+      modal.style.top = (ev.clientY - offsetY) + 'px';
+      modal.style.right = 'auto';
+      modal.style.bottom = 'auto';
+    };
+    document.onmouseup = function() {
+      isDragging = false;
+      document.onmousemove = null;
+      document.onmouseup = null;
+    };
+  };
+})();
+
+
+let myLocationLayer = null;
+
+function zoomToMyLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      const coords = ol.proj.fromLonLat([pos.coords.longitude, pos.coords.latitude]);
+      map.getView().animate({center: coords, zoom: 14, duration: 1000});
+
+      // Hapus marker lama jika ada
+      if (myLocationLayer) {
+        map.removeLayer(myLocationLayer);
+      }
+
+      // Tambahkan marker posisi
+      myLocationLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [
+            new ol.Feature({
+              geometry: new ol.geom.Point(coords)
+            })
+          ]
+        }),
+        style: new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 9,
+            fill: new ol.style.Fill({color: 'rgba(33,150,243,0.7)'}),
+            stroke: new ol.style.Stroke({color: '#1976d2', width: 3})
+          })
+        }),
+        zIndex: 9999
+      });
+      map.addLayer(myLocationLayer);
+    });
+  } else {
+    alert("Geolokasi tidak didukung browser ini.");
+  }
+}
+
+function switchBaseLayer() {
+  const val = document.getElementById('basemap').value;
+    baseLayer.setVisible(true);
+  if (val === 'osm') {
+    googleSatLayer.setVisible(false);
+    esriSatLayer.setVisible(false);
+  } else if (val === 'satellite') {
+    baseLayer.setVisible(false);
+    googleSatLayer.setVisible(true);
+    esriSatLayer.setVisible(false);
+  } else if (val === 'esri') {
+    baseLayer.setVisible(false);
+    googleSatLayer.setVisible(false);
+    esriSatLayer.setVisible(true);
+  }
+}
+
+function showLegend(layerKey, label, url) {
+  const legendContent = document.getElementById('legend-content');
+  if (!document.getElementById('legend-img-' + layerKey)) {
+    const div = document.createElement('div');
+    div.id = 'legend-img-' + layerKey;
+    div.style.marginBottom = '12px';
+    div.innerHTML = `<b>${label}:</b><br>
+      <img src="${url}" alt="Legenda ${label}" style="max-width:200px; border:1px solid #ccc; margin-top:4px;"><br>`;
+    legendContent.appendChild(div);
+  }
+}
+
+function hideLegend(layerKey) {
+  const el = document.getElementById('legend-img-' + layerKey);
+  if (el) el.remove();
+}
+
+    const popup = document.getElementById('popup');
+    const overlay = new ol.Overlay({
+      element: popup,
+      positioning: 'bottom-left',
+      stopEvent: false
+    });
+    map.addOverlay(overlay);
+
+ let measureInteraction = null;
+let measureTooltip, measureTooltipElement;
+
+function updateOpacityLabel(val) {
+  document.getElementById('opacity-label').innerText = val + '%';
+  setAllLayersOpacity(val);
+}
+
+function setAllLayersOpacity(val) {
+  const opacity = parseInt(val, 10) / 100;
+  console.log("Mengatur opacity ke:", opacity);
+  [
+    fungHutnLayer, pbphhLayer, khdpkLayer, foluJL_Layer, ppkhLayer, khdtkLayer,
+    pphkmLayer, pphdLayer, pkkLayer, pippibLayer, piapsLayer, haJatengLayer, iphpsLayer,
+    currentLayer, perhutaniLayer
+  ].forEach(layer => {
+    if (layer) layer.setOpacity(opacity);
+  });
+
+  // Tambahkan ini! Untuk tempLayers
+  tempLayers.forEach(l => {
+    if (l.olLayer) l.olLayer.setOpacity(opacity);
+  });
+}
+
+
+function activateMeasure(type) {
+  deactivateMeasure();
+  measureInteraction = new ol.interaction.Draw({
+    source: window.measureVectorLayer.getSource(),
+    type: type,
+    style: null // pakai style layer
+  });
+  map.addInteraction(measureInteraction);
+  createMeasureTooltip();
+
+  let sketch;
+  measureInteraction.on('drawstart', function(evt) {
+    sketch = evt.feature;
+    let tooltipCoord = evt.coordinate;
+
+    sketch.getGeometry().on('change', function(e) {
+      const geom = e.target;
+      let output;
+      if (geom instanceof ol.geom.Polygon) {
+        output = formatArea(geom);
+        tooltipCoord = geom.getInteriorPoint().getCoordinates();
+      } else if (geom instanceof ol.geom.LineString) {
+        output = formatLength(geom);
+        tooltipCoord = geom.getLastCoordinate();
+      }
+      measureTooltipElement.innerHTML = output;
+      measureTooltip.setPosition(tooltipCoord);
+      document.getElementById('measure-result').innerHTML = output;
+    });
+  });
+
+  measureInteraction.on('drawend', function(evt) {
+    // Tooltip tetap di peta
+    measureTooltipElement.className = 'ol-tooltip ol-tooltip-static';
+    measureTooltip.setOffset([0, -7]);
+    window.measureOverlays.push(measureTooltip); // simpan overlay untuk nanti dihapus semua
+    measureTooltipElement = null;
+    measureTooltip = null;
+    sketch = null;
+    // Jangan panggil deactivateMeasure di sini! Supaya layer tetap
+    // Hanya remove interaction saja, biar tidak bisa gambar lagi sebelum klik tombol ukur
+    map.removeInteraction(measureInteraction);
+    measureInteraction = null;
+  });
+}
+
+function deactivateMeasure() {
+  if (measureInteraction) {
+    map.removeInteraction(measureInteraction);
+    measureInteraction = null;
+  }
+  if (window.measureOverlays) {
+    window.measureOverlays.forEach(overlay => map.removeOverlay(overlay));
+    window.measureOverlays = [];
+  }
+  if (measureTooltip) {
+    map.removeOverlay(measureTooltip);
+    measureTooltip = null;
+  }
+  if (measureTooltipElement) {
+    if (measureTooltipElement.parentNode) {
+      measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+    }
+    measureTooltipElement = null;
+  }
+  document.getElementById('measure-result').innerHTML = '';
+}
+// Pindahkan clear ke fungsi terpisah!
+function clearAllMeasure() {
+  if (window.measureVectorLayer) {
+    window.measureVectorLayer.getSource().clear();
+  }
+  if (window.measureOverlays) {
+    window.measureOverlays.forEach(overlay => map.removeOverlay(overlay));
+    window.measureOverlays = [];
+  }
+  document.getElementById('measure-result').innerHTML = '';
+}
+
+
+function createMeasureTooltip() {
+  if (measureTooltipElement) {
+    measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+  }
+  measureTooltipElement = document.createElement('div');
+  measureTooltipElement.className = 'ol-tooltip ol-tooltip-measure';
+  measureTooltip = new ol.Overlay({
+    element: measureTooltipElement,
+    offset: [0, -15],
+    positioning: 'bottom-center'
+  });
+  map.addOverlay(measureTooltip);
+}
+
+function formatLength(line) {
+  const length = ol.sphere.getLength(line);
+  let output;
+  if (length > 1000) {
+    output = (length / 1000).toFixed(2) + ' km';
+  } else {
+    output = length.toFixed(2) + ' m';
+  }
+  return '<b>Panjang:</b> ' + output;
+}
+function formatArea(polygon) {
+  const area = ol.sphere.getArea(polygon);
+  let output;
+  if (area > 1000000) {
+    output = (area / 1000000).toFixed(2) + ' km²';
+  } else {
+    output = (area / 10000).toFixed(2) + ' ha';
+  }
+  return '<b>Luas:</b> ' + output;
+}
+
+function clearAllCheckboxes() {
+  document.querySelectorAll('input[type="checkbox"][id^="cb-"]').forEach(cb => {
+    if (cb.checked) {
+      cb.checked = false;
+      cb.dispatchEvent(new Event('change'));
+    }
+  });
+}
+
+
+// Array untuk menyimpan data layer sementara
+let tempLayers = []; // {filename, olLayer, aktif, warna}
+
+document.getElementById('opacity-slider').addEventListener('input', function(e) {
+  const opacity = parseFloat(e.target.value) / 100;
+  tempLayers.forEach(l => {
+    if (l.olLayer) l.olLayer.setOpacity(opacity);
+  });
+});
+
+function setTempLayerOpacity(percent) {
+  const opacity = percent / 100;
+  tempLayers.forEach(l => {
+    if (l.olLayer) l.olLayer.setOpacity(opacity);
+  });
+}
+// Render daftar layer sementara
+function refreshUploadLayerList() {
+  const list = document.getElementById("upload-layer-list");
+  if (!list) return;
+  list.innerHTML = tempLayers.map((l,i)=>`
+    <div class="upload-layer-row">
+      <span class="upload-layer-toggle ${l.aktif?'on':'off'}"
+        title="${l.aktif?'Layer aktif':'Layer disembunyikan'}"
+        onclick="toggleTempLayer(${i})">
+        <svg width="13" height="13"><circle cx="6.5" cy="6.5" r="5.6" fill="white"/></svg>
+      </span>
+      <span class="upload-layer-name" title="${l.filename}">
+        <span style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;background:${l.warna};vertical-align:middle"></span>
+        ${l.filename}
+      </span>
+      <button onclick="zoomTempLayer(${i})" class="upload-layer-btn" title="Zoom ke layer">&#128269; Zoom</button>
+      <button onclick="hapusTempLayer(${i})" class="upload-layer-btn red" title="Hapus layer">&#10006; Hapus</button>
+    </div>
+  `).join('');
+}
+
+function refreshOverlapDropdowns() {
+  const listA = document.getElementById("layerA");
+  const listB = document.getElementById("layerB");
+  if (!listA || !listB) return;
+
+  // Kosongkan dulu
+  listA.innerHTML = '<option value="">Layer A</option>';
+  listB.innerHTML = '<option value="">Layer B</option>';
+
+  // 1. Layer hasil upload frontend (tempLayers)
+  if (window.tempLayers && Array.isArray(tempLayers)) {
+    tempLayers.forEach((l, i) => {
+      const label = l.filename ? l.filename + " (Upload)" : "Layer Upload " + (i + 1);
+      let optA = document.createElement("option");
+      optA.value = "temp-" + i;
+      optA.text = label;
+      listA.appendChild(optA);
+
+      let optB = document.createElement("option");
+      optB.value = "temp-" + i;
+      optB.text = label;
+      listB.appendChild(optB);
+    });
+  }
+
+  // 2. Layer dari backend GeoServer (semua poligon)
+  fetch('https://gs.schizone.biz.id/geoserver/BPHL8/wfs?service=WFS&request=GetCapabilities')
+    .then(response => response.text())
+    .then(xmlString => {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlString, "application/xml");
+      const featureTypes = xmlDoc.querySelectorAll('FeatureType');
+      featureTypes.forEach(ft => {
+        const nameNode = ft.querySelector('Name');
+        const geomNode = ft.querySelector('DefaultGeometry');
+        const layerName = nameNode ? nameNode.textContent : "";
+        // Deteksi layer poligon (opsional: tambahkan filter tipe geometry Polygon/Multipolygon)
+        // Bisa cek Abstract/Title juga kalau mau lebih spesifik
+        // **Di bawah ini tanpa filter tipe, semua layer backend dimasukkan**
+        if (layerName.startsWith('BPHL8:')) {
+          const niceName = layerName.replace('BPHL8:', '') + " [GeoServer]";
+          let optA = document.createElement('option');
+          optA.value = "geoserver-" + layerName;
+          optA.text = niceName;
+          listA.appendChild(optA);
+
+          let optB = document.createElement('option');
+          optB.value = "geoserver-" + layerName;
+          optB.text = niceName;
+          listB.appendChild(optB);
+        }
+      });
+    });
+}
+
+
+// Fungsi memilih warna acak (loop palette)
+function getLayerColor(idx) {
+  const colors = ["#e74c3c", "#27ae60", "#2980b9", "#f39c12", "#9b59b6"];
+  return colors[idx % colors.length];
+}
+
+
+document.getElementById("input-layer").addEventListener("change", function(e) {
+ // if (e.target.files.length === 0) return;
+ // if (tempLayers.length >= 5) {
+ //   alert("Maksimum 5 layer sementara!");
+ //   e.target.value = '';
+ //   return;
+ // }
+
+  const file = e.target.files[0];
+  const filename = file.name;
+  const ext = filename.split('.').pop().toLowerCase();
+  const warna = getLayerColor(tempLayers.length);
+
+  if (!['geojson','json','kml','kmz'].includes(ext)) {
+    alert('Hanya file GeoJSON, KML, atau KMZ yang didukung!');
+    e.target.value = '';
+    return;
+  }
+
+  // --- KHUSUS KMZ ---
+  if (ext === 'kmz') {
+    JSZip.loadAsync(file).then(zip => {
+      const kmlFile = Object.keys(zip.files).find(name => name.toLowerCase().endsWith('.kml'));
+      if (!kmlFile) {
+        alert('File KMZ tidak mengandung file KML.');
+        return;
+      }
+      return zip.files[kmlFile].async('string');
+    }).then(kmlText => {
+      if (!kmlText) return;
+      const format = new ol.format.KML();
+      const features = format.readFeatures(kmlText, {
+        featureProjection: map.getView().getProjection()
+      });
+      if (features.length === 0) {
+        alert('KML dalam KMZ tidak memiliki fitur.');
+        return;
+      }
+
+      const vectorSource = new ol.source.Vector({features});
+      const olLayer = new ol.layer.Vector({
+        source: vectorSource,
+        style: new ol.style.Style({
+          fill: new ol.style.Fill({color: warna+'22'}),
+          stroke: new ol.style.Stroke({color: warna, width: 2}),
+          image: new ol.style.Circle({
+            radius: 6,
+            fill: new ol.style.Fill({color: warna}),
+            stroke: new ol.style.Stroke({color:'#fff',width:1})
+          })
+        }),
+        visible: true,
+        zIndex: 888
+      });
+
+      map.addLayer(olLayer);
+      tempLayers.push({filename, olLayer, aktif:true, warna});
+      refreshUploadLayerList();
+      refreshOverlapDropdowns();
+    }).catch(err => {
+      console.error('Gagal proses KMZ:', err);
+      alert('Gagal membuka file KMZ.');
+    });
+
+    e.target.value = '';
+    return;
+  }
+
+  // --- Untuk GeoJSON, JSON, KML ---
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    let format;
+    if (ext === 'geojson' || ext === 'json') {
+      format = new ol.format.GeoJSON();
+    } else if (ext === 'kml') {
+      format = new ol.format.KML();
+    }
+
+    const features = format.readFeatures(ev.target.result, {
+      featureProjection: map.getView().getProjection()
+    });
+
+    if (features.length === 0) {
+      alert('File tidak berisi fitur yang dapat dibaca.');
+      return;
+    }
+
+    const vectorSource = new ol.source.Vector({features});
+    const olLayer = new ol.layer.Vector({
+      source: vectorSource,
+      style: new ol.style.Style({
+        fill: new ol.style.Fill({color: warna+'22'}),
+        stroke: new ol.style.Stroke({color: warna, width: 2}),
+        image: new ol.style.Circle({
+          radius: 6,
+          fill: new ol.style.Fill({color: warna}),
+          stroke: new ol.style.Stroke({color:'#fff',width:1})
+        })
+      }),
+      visible: true,
+      zIndex: 888
+    });
+
+    map.addLayer(olLayer);
+    tempLayers.push({filename, olLayer, aktif:true, warna});
+    refreshUploadLayerList();
+    refreshOverlapDropdowns();
+  };
+  reader.readAsText(file);
+});
+
+
+// ON/OFF toggle
+window.toggleTempLayer = function(idx) {
+  const l = tempLayers[idx];
+  l.aktif = !l.aktif;
+  if (l.olLayer) l.olLayer.setVisible(l.aktif);
+  refreshUploadLayerList();
+};
+
+// Hapus layer
+window.hapusTempLayer = function(idx) {
+  const l = tempLayers[idx];
+  if (l.olLayer) map.removeLayer(l.olLayer);
+  tempLayers.splice(idx,1);
+  refreshUploadLayerList();
+  refreshOverlapDropdowns();
+};
+
+// Zoom to layer
+window.zoomTempLayer = function(idx) {
+  const l = tempLayers[idx];
+  if (l.olLayer && l.olLayer.getSource().getFeatures().length>0) {
+    const extent = ol.extent.createEmpty();
+    l.olLayer.getSource().getFeatures().forEach(f => ol.extent.extend(extent, f.getGeometry().getExtent()));
+    map.getView().fit(extent, {padding:[60,60,60,60], duration:800, maxZoom:16});
+  }
+};
+
+// Inisialisasi render awal (kosong)
+refreshUploadLayerList();
+
+    const fungsiLookup = {
+      "100100": "Hutan Lindung",
+      "100200": "KSA/KPA",
+      "100201": "KSA/KPA Laut",
+      "100210": "Cagar Alam",
+      "100211": "Cagar Alam Laut",
+      "100220": "Suaka Margasatwa",
+      "100221": "Suaka Margasatwa Laut",
+      "100230": "Taman Buru",
+      "100240": "Taman Nasional",
+      "100241": "Taman Nasional Laut",
+      "100250": "Taman Wisata Alam/Hutan Wisata Darat",
+      "100251": "Taman Wisata Alam/Hutan Wisata Laut",
+      "100260": "Taman Hutan Raya",
+      "100300": "Hutan Produksi",
+      "100400": "Hutan Produksi Terbatas",
+      "100500": "Hutan Produksi Konversi",
+      "100600": "Hutan Negara Bebas",
+      "100700": "Areal Penggunaan Lain",
+      "500100": "Danau",
+      "500300": "Laut - Air"
+    };
+
+function toggleLayerWMS(layerName, layerVarName) {
+  const prov = document.getElementById('provinsi').value;
+  if (prov === 'WILKER') {
+    // For WILKER, use specific layers for each
+    if (layerName === 'PBPHH') {
+      layerName = 'BPHL8:PBPHH_BPHL8'; // Update for PBPHH
+    } else if (layerName === 'KHDPK') {      
+      layerName = 'BPHL8:KHDPK149_BPHL8'; // Update for KHDPK
+    } else if (layerName === 'KHDTK') {
+      layerName = 'BPHL8:KHDTK_BPHL8'; // Update for KHDTK
+    } else if (layerName === 'FOLU') {
+      layerName = 'BPHL8:FOLU_JL_BPHL8'; // Update for FOLU JL
+    } else if (layerName === 'PPHKM') {
+      layerName = 'BPHL8:PPHKM_BPHL8'; 
+    } else if (layerName === 'PPHD') {
+      layerName = 'BPHL8:PPHD_BPHL8'; 
+    } else if (layerName === 'PKK') {
+      layerName = 'BPHL8:PKK_BPHL8'; 
+    } else if (layerName === 'PIPPIB2025') {
+      layerName = 'BPHL8:PIPPIB2025_BPHL8';
+    } else if (layerName === 'PERHUTANI') {
+      layerName = 'BPHL8:PERHUTANI';     
+    } else if (layerName === 'PPKHEXP') {
+      layerName = 'BPHL8:PPKH_EXP_JATIM';
+    } else if (layerName === 'PPKH PEMDA') {
+      layerName = 'BPHL8:PPKH_PEMDA';	    
+    } else if (layerName === 'PIAPS9') {
+      layerName = 'BPHL8:PIAPS9_BPHL8'; 
+   }
+  }
+
+  if (window[layerVarName]) {
+    map.removeLayer(window[layerVarName]);
+    window[layerVarName] = null;
+    return;
+  }
+
+  window[layerVarName] = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': layerName,
+        'TILED': true
+      },
+      serverType: 'geoserver',
+      crossOrigin: 'anonymous'
+    }),
+    visible: true
+  });
+
+  map.addLayer(window[layerVarName]);
+}
+
+
+const provMapping = {
+  'YOGYA': 'Daerah Istimewa Yogyakarta',
+  'JATENG': 'Jawa Tengah',
+  'JATIM': 'Jawa Timur'
+};
+
+
+
+  function handleProvinsiChange() {
+  const prov = document.getElementById('provinsi').value;
+  const kabupatenSelect = document.getElementById('kabupaten');
+
+  // Enable/disable checkbox layer sesuai provinsi
+ // Disable checkbox kalau belum pilih provinsi atau masih WILKER
+document.querySelectorAll('input[type="checkbox"][id^="cb-"]').forEach(cb => {
+  cb.disabled = (!prov || prov === 'WILKER');
+});
+
+
+ 
+  if (prov === 'WILKER') {
+    kabupatenSelect.disabled = true;
+    kabupatenSelect.innerHTML = '<option value="">(-Semua Provinsi-)</option>';
+    kabupatenSelect.dataset.provName = '';
+    updateLayer();
+  } else if (prov) {
+    kabupatenSelect.disabled = false;
+    loadKabupatenWFS();
+    updateLayer();
+    updateLegend(); 
+  }
+}
+
+    function loadKabupatenWFS() {
+      const prov = document.getElementById('provinsi').value;
+      const kabSelect = document.getElementById('kabupaten');
+      kabSelect.innerHTML = '<option value="">-Semua Kab/Kota-</option>';
+
+      if (!prov) return;
+
+      const url = 'https://gs.schizone.biz.id/geoserver/BPHL8/ows' +
+                  '?service=WFS&version=1.0.0&request=GetFeature' +
+                  '&typeName=BPHL8:FUNGHTN_' + prov +
+                  '&outputFormat=application/json' +
+                  '&propertyName=WADMKK,WADMPR';
+
+      fetch(url)
+        .then(response => response.json())
+        .then(json => {
+          const kabSet = new Map();
+          json.features.forEach(f => {
+            const namaKab = f.properties.WADMKK;
+            const namaProv = f.properties.WADMPR;
+            if (namaKab && namaProv) {
+              kabSet.set(namaKab, namaProv);
+            }
+          });
+
+          let firstProv = null;
+          kabSet.forEach((provName, kabName) => {
+            if (!firstProv) firstProv = provName;
+            const opt = document.createElement('option');
+            opt.value = kabName;
+            opt.text = kabName;
+            kabSelect.appendChild(opt);
+          });
+
+          kabSelect.dataset.provName = firstProv;
+        })
+        .catch(err => {
+          console.error('Gagal load WADMKK:', err);
+        });
+    }
+
+    function updateLayer() {
+      const prov = document.getElementById('provinsi').value;
+      const kab = document.getElementById('kabupaten').value;
+      const provName = document.getElementById('kabupaten').dataset.provName || '';
+
+      if (!prov) {
+        alert("Pilih provinsi terlebih dahulu");
+        return;
+      }
+
+      if (currentLayer) {
+        map.removeLayer(currentLayer);
+      }
+
+      let layersParam = '';
+      let cql = '1=1';
+
+      if (prov === 'WILKER') {
+        layersParam = 'BPHL8:FUNGHTN_WILKER';
+      } else {
+        layersParam = 'BPHL8:FUNGHTN_' + prov;
+        cql = `WADMPR='${provName}'`;
+        if (kab) {
+          cql += ` AND WADMKK='${kab}'`;
+        }
+      }
+
+      currentLayer = new ol.layer.Image({
+        source: new ol.source.ImageWMS({
+          url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+          params: {
+            'LAYERS': layersParam,
+            'TILED': true,
+            'CQL_FILTER': cql
+          },
+          ratio: 1,
+          serverType: 'geoserver'
+        })
+      });
+
+      map.addLayer(currentLayer);
+      updateLegend();
+      updateAllLegendsAndRekap();
+
+    }
+
+function zoomToWilayah(jenis, namaWilayah) {
+  const prov = document.getElementById('provinsi').value;
+  if (!prov) return;
+
+  const typeName = 'BPHL8:FUNGHTN_' + prov;
+  let cql = '';
+
+  if (jenis === 'kabupaten') {
+    cql = `WADMKK ILIKE '${namaWilayah}'`; // case-insensitive match
+  } else if (jenis === 'provinsi') {
+    cql = `WADMPR ILIKE '${namaWilayah}'`;
+  }
+
+  const url = 'https://gs.schizone.biz.id/geoserver/BPHL8/ows' +
+              '?service=WFS&version=1.1.0&request=GetFeature' +
+              '&typename=' + typeName +
+              '&outputFormat=application/json' +
+              '&CQL_FILTER=' + encodeURIComponent(cql);
+
+  fetch(url)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+
+      if (features.length > 0) {
+        const extent = ol.extent.createEmpty();
+        features.forEach(f => {
+          ol.extent.extend(extent, f.getGeometry().getExtent());
+        });
+
+        map.getView().fit(extent, {
+          padding: [40, 40, 40, 40],
+          duration: 1000,
+          maxZoom: 14
+        });
+      } else {
+        alert("Wilayah tidak ditemukan: " + namaWilayah);
+      }
+    });
+}
+
+function zoomToSelected(jenis) {
+  // 1. Hapus semua layer selain baseLayer dan fungHutnLayer
+  Object.entries({
+    pbphhLayer, khdpkLayer, foluJL_Layer, ppkhLayer, khdtkLayer,
+    pphkmLayer, pphdLayer, pkkLayer, pippibLayer, piapsLayer,
+    haJatengLayer, iphpsLayer, highlightKHDTK, perhutaniLayer, ppkhexpLayer
+  }).forEach(([name, layer]) => {
+    if (layer && map && typeof map.removeLayer === "function") {
+      map.removeLayer(layer);
+      window[name] = null;
+    }
+  });
+
+  // 2. Uncheck semua checkbox layer kecuali Fungsi Kawasan
+document.querySelectorAll('input[type="checkbox"][id^="cb-"]').forEach(cb => {
+  if (cb.id === 'cb-fung-hutn') {
+    cb.checked = true;
+    cb.dispatchEvent(new Event('change'));
+  } else {
+    cb.checked = false;
+    cb.dispatchEvent(new Event('change'));
+  }
+});
+   // Tambahan: Hide semua legend, kecuali Fungsi Kawasan (opsional)
+  [
+    'pbphh', 'khdpk', 'folu', 'ppkh', 'khdtk', 'pphkm', 'pphd', 'pkk', 'pippib',
+    'piaps', 'ha-jateng', 'iphps', 'perhutani', 'ppkhexp'
+  ].forEach(key => {
+    if (key !== 'funghutn') hideLegend(key);
+  });
+
+  // 4. Bersihkan popup
+  let popupEl = document.getElementById('popup');
+  if (popupEl) {
+    popupEl.innerHTML = 'Klik peta untuk info';
+    popupEl.style.display = '';
+  }
+
+  // 5. Zoom logic
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = provMapping[prov] || '';
+
+  if (!prov) return;
+
+  if (prov === 'WILKER') {
+    map.getView().animate({
+      center: ol.proj.fromLonLat(provCenter['WILKER']),
+      zoom: 7,
+      duration: 1000
+    });
+  } else if (kabCenter && kabCenter[kab]) {
+    map.getView().animate({
+      center: ol.proj.fromLonLat(kabCenter[kab]),
+      zoom: 10,
+      duration: 1000
+    });
+  } else if (kab) {
+    zoomToWilayah('kabupaten', kab);
+  } else if (provCenter[prov]) {
+    map.getView().animate({
+      center: ol.proj.fromLonLat(provCenter[prov]),
+      zoom: prov === 'YOGYA' ? 10 : 8,
+      duration: 1000
+    });
+  } else {
+    zoomToWilayah('provinsi', provName);
+  }
+
+  // 6. Tampilkan layer & rekap Fungsi Kawasan
+  toggleFungHutn();
+}
+
+
+
+function zoomToWilker() {
+  const layerName = 'BPHL8:FUNGHTN_WILKER'; // Pastikan layer yang dipilih adalah FUNGHTN_WILKER
+  const url = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typename=${layerName}&outputFormat=application/json`;
+
+  fetch(url)
+    .then(r => r.json())
+    .then(geojson => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(geojson, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+
+      if (features.length > 0) {
+        const extent = ol.extent.createEmpty();
+        features.forEach(f => {
+          ol.extent.extend(extent, f.getGeometry().getExtent());
+        });
+
+        map.getView().fit(extent, {
+          padding: [40, 40, 40, 40],
+          duration: 1000,
+          maxZoom: 12
+        });
+      }
+    })
+    .catch(err => {
+      console.error("Error fetching data: ", err);
+    });
+}
+
+async function analyzeOverlap() {
+  const layerA = document.getElementById('layerA').value;
+  const layerB = document.getElementById('layerB').value;
+  const resultDiv = document.getElementById('overlap-result');
+  resultDiv.innerHTML = 'Memproses...';
+
+  if (!layerA || !layerB) {
+    resultDiv.innerHTML = '<span style="color:red;">Pilih kedua layer!</span>';
+    return;
+  }
+  if (layerA === layerB) {
+    resultDiv.innerHTML = '<span style="color:red;">Layer A dan B tidak boleh sama!</span>';
+    return;
+  }
+
+  // Fetch kedua layer sebagai GeoJSON
+  try {
+    const [geojsonA, geojsonB] = await Promise.all([
+      fetch(`https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=${layerA}&outputFormat=application/json`).then(r => r.json()),
+      fetch(`https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=${layerB}&outputFormat=application/json`).then(r => r.json()),
+    ]);
+
+    // Validasi
+    if (!geojsonA.features.length || !geojsonB.features.length) {
+      resultDiv.innerHTML = '<span style="color:red;">Salah satu layer kosong.</span>';
+      return;
+    }
+
+    // Irisan semua polygon (bisa lama jika ribuan feature)
+    let overlaps = [];
+    let totalOverlapArea = 0;
+    geojsonA.features.forEach((featA, i) => {
+      geojsonB.features.forEach((featB, j) => {
+        // Hanya polygon
+        if (featA.geometry.type.includes('Polygon') && featB.geometry.type.includes('Polygon')) {
+          let intersect = turf.intersect(featA, featB);
+          if (intersect) {
+            overlaps.push(intersect);
+            // Hitung luas (hektar)
+            let areaHa = turf.area(intersect) / 10000;
+            totalOverlapArea += areaHa;
+          }
+        }
+      });
+    });
+
+    if (!overlaps.length) {
+      resultDiv.innerHTML = '<span style="color:orange;">Tidak ada area overlap.</span>';
+      return;
+    }
+
+    resultDiv.innerHTML = `
+	  <span style="color:green;font-weight:600;">Ditemukan ${overlaps.length} irisan polygon!</span><br>
+	  <b>Total luas overlap:</b> ${totalOverlapArea.toLocaleString('id-ID', {minimumFractionDigits:2})} ha<br>
+	  <button onclick="downloadOverlapGeoJSON()" style="background:#34c759;color:#fff;padding:5px 5px;border:none;border-radius:7px;font-weight:600;font-size:14px;box-shadow:0 1px 5px #eef;cursor:pointer;transition:.18s;">
+		&#128190;Unduh GeoJSON</button>
+	  <button onclick="tampilkanIntersectLayer()" style="background:#007aff;color:#fff;padding:5px 5px;border:none;border-radius:7px;font-weight:600;font-size:14px;margin-left:8px;box-shadow:0 1px 5px #eef;cursor:pointer;transition:.18s;">
+		&#128065; Tampilkan	  </button>
+	`;
+
+    // Simpan global untuk bisa di-download
+    window._lastOverlapGeoJSON = {
+      type: "FeatureCollection",
+      features: overlaps
+    };
+
+  } catch (e) {
+    resultDiv.innerHTML = '<span style="color:red;">Gagal fetch/tabelirisan: ' + e + '</span>';
+  }
+}
+
+function downloadOverlapGeoJSON() {
+  const data = window._lastOverlapGeoJSON;
+  if (!data) return;
+  const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "overlap.geojson";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }, 2000);
+}
+
+function tampilkanIntersectLayer() {
+  if (!window._lastOverlapGeoJSON || !window._lastOverlapGeoJSON.features || window._lastOverlapGeoJSON.features.length === 0) {
+    alert("Belum ada hasil intersect.");
+    return;
+  }
+  // Hapus layer intersect lama jika ada
+  if (window._overlapLayer && typeof map !== "undefined") {
+    map.removeLayer(window._overlapLayer);
+    window._overlapLayer = null;
+  }
+
+  const intersectSource = new ol.source.Vector({
+    features: new ol.format.GeoJSON().readFeatures(
+      window._lastOverlapGeoJSON,
+      {featureProjection: map.getView().getProjection() || 'EPSG:3857'}
+    )
+  });
+  window._overlapLayer = new ol.layer.Vector({
+    source: intersectSource,
+    style: new ol.style.Style({
+      fill: new ol.style.Fill({color: 'rgba(255,0,0,0.23)'}),
+      stroke: new ol.style.Stroke({color: 'red', width: 2})
+    }),
+    zIndex: 990
+  });
+  map.addLayer(window._overlapLayer);
+
+  // Zoom to result
+  const feats = intersectSource.getFeatures();
+  if (feats.length) {
+    const extent = ol.extent.createEmpty();
+    feats.forEach(f => ol.extent.extend(extent, f.getGeometry().getExtent()));
+    map.getView().fit(extent, {padding:[40,40,40,40], duration: 850, maxZoom: 16});
+  }
+}
+
+
+function resetOverlap() {
+  // 1. Kosongkan hasil analisa
+  const resultDiv = document.getElementById('overlap-result');
+  if (resultDiv) resultDiv.innerHTML = '';
+
+  // 2. Hapus layer overlap dari peta jika ada
+  if (window._overlapLayer && typeof map !== "undefined") {
+    map.removeLayer(window._overlapLayer);
+    window._overlapLayer = null;
+  }
+
+  // 3. Reset dropdown ke default
+  const listA = document.getElementById("layerA");
+  const listB = document.getElementById("layerB");
+  if (listA) listA.selectedIndex = 0;
+  if (listB) listB.selectedIndex = 0;
+
+  // 4. Reset cache overlap GeoJSON
+  window._lastOverlapGeoJSON = null;
+
+  // 5. Opsional: Scroll toolbox ke atas
+  const box = document.getElementById('overlap-toolbox');
+  if (box) box.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+  // 6. Opsional: Kembalikan focus ke Layer A
+  if (listA) listA.focus();
+}
+
+function toggleFungHutn() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-fung-hutn').checked;
+  const rekapBox = document.getElementById('rekap-fung-hutn');
+
+  // Hapus layer jika sudah ada
+  if (fungHutnLayer) {
+    map.removeLayer(fungHutnLayer);
+    fungHutnLayer = null;
+    hideLegend('funghutn'); // Hapus legend saat layer di-uncheck
+  }
+
+  // Jika tidak dicentang, sembunyikan rekap dan legend lalu keluar
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    hideLegend('funghutn');
+    return;
+  }
+
+  let layersParam = `BPHL8:FUNGHTN_${prov}`;
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  // Buat layer WMS untuk Fungsi Kawasan Hutan
+  fungHutnLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': layersParam,
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+
+  map.addLayer(fungHutnLayer);
+
+  // Tampilkan legend di pojok kanan atas
+  showLegend(
+    'funghutn',
+    'Fungsi Kawasan Hutan',
+    `https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=${layersParam}`
+  );
+
+  // Tampilkan rekap jika checkbox dicentang
+  rekapLuasByKolom({
+    typeNames: layersParam,
+    label: 'Fungsi Kawasan Hutan',
+    groupBy: 'FUNGSIKWS',
+    targetDivId: 'rekap-fung-hutn'
+  });
+}
+
+function togglePBPHH() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-pbphh').checked;
+  const rekapBox = document.getElementById('rekap-pbphh');
+
+  // Hapus layer & legend jika tidak dicentang
+  if (pbphhLayer) {
+    map.removeLayer(pbphhLayer);
+    pbphhLayer = null;
+    updatePBPHHLegend(false); // Hapus legend dari pojok kanan atas
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    updatePBPHHLegend(false); // Hapus legend dari pojok kanan atas
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  const wfsUrl = 'https://gs.schizone.biz.id/geoserver/BPHL8/ows?' +
+    'service=WFS&version=1.1.0&request=GetFeature&typename=BPHL8:PBPHH_BPHL8&' +
+    'outputFormat=application/json&CQL_FILTER=' + encodeURIComponent(cql);
+
+  pbphhLayer = new ol.layer.Vector({
+    source: new ol.source.Vector({
+      format: new ol.format.GeoJSON(),
+      url: wfsUrl,
+      strategy: ol.loadingstrategy.all
+    }),
+    style: function(feature) {
+      const skala = feature.get('Skala_Usah');
+      const warnaMap = {
+        'Barecore Kapasitas Besar': '#3cb44b',
+        'Barecore Kapasitas Kecil': '#ffe119',
+        'Kayu Gergajian Kapasitas Besar': '#e6194B',
+        'Kayu Gergajian Kapasitas Kecil': '#f58231',
+        'Kayu Lapis Kapasitas Besar': '#4363d8',
+        'Kayu Lapis Kapasitas Kecil': '#911eb4',
+        'Veneer Kapasitas Besar': '#42d4f4',
+        'Veneer Kapasitas Kecil': '#f032e6',
+        'Wood Pellet Kapasitas Besar': '#000000',
+        'Wood Pellet Kapasitas Kecil': '#a9a9a9'
+      };
+      let warna = warnaMap[skala] || '#999999';
+
+      return new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 6,
+          fill: new ol.style.Fill({ color: warna }),
+          stroke: new ol.style.Stroke({ color: 'white', width: 1 })
+        })
+      });
+    }
+  });
+
+  map.addLayer(pbphhLayer);
+  updatePBPHHLegend(true); // Tampilkan legend di pojok kanan atas
+
+  pbphhLayer.getSource().on('change', function () {
+    if (pbphhLayer.getSource().getState() === 'ready') {
+      
+    }
+  });
+}
+
+function toggleKHDTK() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = provMapping[prov] || '';
+  const show = document.getElementById('cb-khdtk').checked;
+  const rekapBox = document.getElementById('rekap-khdtk');
+
+  // Hapus layer & legend jika sudah ada
+  if (khdtkLayer) {
+    map.removeLayer(khdtkLayer);
+    khdtkLayer = null;
+    hideLegend('khdtk');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    hideLegend('khdtk');
+    return;
+  }
+
+  // --- 1. Tambahkan layer WMS untuk peta (pakai style SLD) ---
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  khdtkLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:KHDTK_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+
+  map.addLayer(khdtkLayer);
+
+  showLegend(
+    'khdtk',
+    'KHDTK',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:KHDTK_BPHL8'
+  );
+
+  // --- 2. Fetch data WFS untuk rekap tabel ---
+  
+}
+
+
+
+function toggleFOLUJL() {
+  const prov = document.getElementById('provinsi').value;
+  const provName = provMapping[prov] || '';
+  const kab = document.getElementById('kabupaten').value;
+  const show = document.getElementById('cb-folu').checked;
+  const rekapBox = document.getElementById('rekap-folu');
+
+  if (foluJL_Layer) {
+    map.removeLayer(foluJL_Layer);
+    foluJL_Layer = null;
+    hideLegend('folujl');
+  }
+
+  if (!show || !provName) {
+    rekapBox.style.display = 'none';
+    hideLegend('folujl');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  foluJL_Layer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:FOLU_JL_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+
+  map.addLayer(foluJL_Layer);
+
+  showLegend(
+    'folujl',
+    'FOLU JL',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:FOLU_JL_BPHL8'
+  );
+
+  rekapLuasByKolom({
+    typeNames: 'BPHL8:FOLU_JL_BPHL8',
+    label: 'FOLU JL',
+    groupBy: 'RENOPS_JAW',
+    targetDivId: 'rekap-folu'
+  });
+
+  rekapBox.style.display = 'block';
+}
+
+function toggleKHDPK() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-khdpk').checked;
+  const rekapBox = document.getElementById('rekap-khdpk');
+
+  if (khdpkLayer) {
+    map.removeLayer(khdpkLayer);
+    khdpkLayer = null;
+    hideLegend('khdpk');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.style.display = 'none';
+    hideLegend('khdpk');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  khdpkLayer = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:KHDPK149_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      serverType: 'geoserver',
+      crossOrigin: 'anonymous'
+    })
+  });
+
+  map.addLayer(khdpkLayer);
+
+  showLegend(
+    'khdpk',
+    'KHDPK',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:KHDPK149_BPHL8'
+  );
+
+  rekapLuasByKolom({
+    label: 'KHDPK',
+    typeNames: 'BPHL8:KHDPK149_BPHL8',
+    groupBy: 'KRITERIA',
+    targetDivId: 'rekap-khdpk'
+  });
+
+  rekapBox.style.display = 'block';
+}
+
+function togglePerhutani() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-perhutani').checked;
+  const rekapBox = document.getElementById('rekap-perhutani');
+
+  if (perhutaniLayer) {
+    map.removeLayer(perhutaniLayer);
+    perhutaniLayer = null;
+    hideLegend('perhutani');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.style.display = 'none';
+    hideLegend('perhutani');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  perhutaniLayer = new ol.layer.Tile({
+    source: new ol.source.TileWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:PERHUTANI',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      serverType: 'geoserver',
+      crossOrigin: 'anonymous'
+    })
+  });
+
+  map.addLayer(perhutaniLayer);
+
+  showLegend(
+    'perhutani',
+    'PERHUTANI',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:PERHUTANI'
+  );
+
+  rekapLuasByKolom({
+    typeNames: 'BPHL8:PERHUTANI',
+    label: 'PERHUTANI',
+    groupBy: 'FUNGSIKWS',
+    targetDivId: 'rekap-perhutani'
+  });
+
+  rekapBox.style.display = 'block';
+}
+
+function togglePPKH() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  // Ambil dari dataset dulu, fallback ke mapping
+  const provName = document.getElementById('kabupaten').dataset.provName || provMapping[prov] || '';
+  const show = document.getElementById('cb-ppkh').checked;
+  const rekapBox = document.getElementById('rekap-ppkh');
+
+  if (ppkhLayer) {
+    map.removeLayer(ppkhLayer);
+    ppkhLayer = null;
+    hideLegend('ppkh');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    hideLegend('ppkh');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  ppkhLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:PPKH_OP_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+
+  map.addLayer(ppkhLayer);
+
+  showLegend(
+    'ppkh',
+    'PPKH OP',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:PPKH_OP_BPHL8'
+  );
+  
+}
+
+function togglePPKHPemda() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || provMapping[prov] || '';
+  const show = document.getElementById('cb-ppkhpemda').checked;
+  const rekapBox = document.getElementById('rekap-ppkhpemda'); // pastikan ada div ini jika ingin rekap kecil
+
+  if (ppkhPemdaLayer) {
+    map.removeLayer(ppkhPemdaLayer);
+    ppkhPemdaLayer = null;
+    hideLegend('ppkhpemda');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    if (rekapBox) rekapBox.innerHTML = '';
+    hideLegend('ppkhpemda');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  const source = new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    url: `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=BPHL8:PPKH_PEMDA&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`,
+    strategy: ol.loadingstrategy.all
+  });
+
+  ppkhPemdaLayer = new ol.layer.Vector({
+    source: source,
+    style: new ol.style.Style({
+      stroke: new ol.style.Stroke({ color: '#8e44ad', width: 2 }),
+      fill: new ol.style.Fill({ color: 'rgba(142, 68, 173, 0.2)' })
+    })
+  });
+
+  map.addLayer(ppkhPemdaLayer);
+
+  showLegend(
+    'ppkhpemda',
+    'PPKH PEMDA',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:PPKH_PEMDA'
+  );
+}
+	  
+	  
+function togglePPKHExp() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = provMapping[prov] || '';
+  const show = document.getElementById('cb-ppkhexp').checked;
+  const rekapBox = document.getElementById('rekap-ppkhexp');
+
+  if (ppkhexpLayer) {
+    map.removeLayer(ppkhexpLayer);
+    ppkhexpLayer = null;
+    hideLegend('ppkhexp');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    hideLegend('ppkhexp');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  ppkhexpLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:PPKH_EXP_JATIM',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+  map.addLayer(ppkhexpLayer);
+
+  showLegend(
+    'ppkhexp',
+    'PPKH Eksplorasi',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:PPKH_EXP_JATIM'
+  );
+  
+}
+
+
+function togglePPHKM() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-pphkm').checked;
+  const rekapBox = document.getElementById('rekap-pphkm');
+
+  if (pphkmLayer) {
+    map.removeLayer(pphkmLayer);
+    pphkmLayer = null;
+    hideLegend('pphkm');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    hideLegend('pphkm');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  pphkmLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:PPHKM_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+
+  map.addLayer(pphkmLayer);
+
+  showLegend(
+    'pphkm',
+    'PPHKM',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:PPHKM_BPHL8'
+  ); 
+
+}
+
+function togglePPHD() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-pphd').checked;
+  const rekapBox = document.getElementById('rekap-pphd');
+
+  if (pphdLayer) {
+    map.removeLayer(pphdLayer);
+    pphdLayer = null;
+    hideLegend('pphd');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    hideLegend('pphd');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  pphdLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:PPHD_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+
+  map.addLayer(pphdLayer);
+
+  showLegend(
+    'pphd',
+    'PPHD',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:PPHD_BPHL8'
+  );
+ 
+}
+
+
+
+function togglePKK() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-pkk').checked;
+  const rekapBox = document.getElementById('rekap-pkk');
+
+  if (pkkLayer) {
+    map.removeLayer(pkkLayer);
+    pkkLayer = null;
+    hideLegend('pkk');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    hideLegend('pkk');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  pkkLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:PKK_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+
+  map.addLayer(pkkLayer);
+
+  showLegend(
+    'pkk',
+    'PKK',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:PKK_BPHL8'
+  );
+ 
+}
+
+
+function togglePIPPIB2025() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-pippib2025').checked;
+  const rekapBox = document.getElementById('rekap-pippib2025');
+
+  if (pippibLayer) {
+    map.removeLayer(pippibLayer);
+    pippibLayer = null;
+    hideLegend('pippib2025');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    hideLegend('pippib2025');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  pippibLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:PIPPIB2025_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+
+  map.addLayer(pippibLayer);
+
+  showLegend(
+    'pippib2025',
+    'PIPPIB 2025',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:PIPPIB2025_BPHL8'
+  );
+
+  rekapLuasByKolom({
+    typeNames: 'BPHL8:PIPPIB2025_BPHL8',
+    label: 'PIPPIB2025',
+    groupBy: 'PIPPIB',
+    targetDivId: 'rekap-pippib2025'
+  });
+}
+
+function togglePIAPS9() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-piaps9').checked;
+  const rekapBox = document.getElementById('rekap-piaps9');
+
+  if (piapsLayer) {
+    map.removeLayer(piapsLayer);
+    piapsLayer = null;
+    hideLegend('piaps9');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    hideLegend('piaps9');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  piapsLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:PIAPS9_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+
+  map.addLayer(piapsLayer);
+
+  showLegend(
+    'piaps9',
+    'PIAPS9',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:PIAPS9_BPHL8'
+  );
+
+  
+}
+
+
+
+
+function toggleIphps() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-iphps').checked;
+  const rekapBox = document.getElementById('rekap-iphps');
+
+  if (iphpsLayer) {
+    map.removeLayer(iphpsLayer);
+    iphpsLayer = null;
+    hideLegend('iphps');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    hideLegend('iphps');
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  iphpsLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:IPHPS_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    })
+  });
+
+  map.addLayer(iphpsLayer);
+
+  showLegend(
+    'iphps',
+    'IPHPS',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:IPHPS_BPHL8'
+  );
+  
+}
+
+
+function updateLegend() {
+  const prov = document.getElementById('provinsi').value;
+
+  let layerName = '';
+  if (prov === 'WILKER') {
+    layerName = 'BPHL8:FUNGHTN_WILKER';
+  } else if (prov) {
+    layerName = 'BPHL8:FUNGHTN_' + prov;
+  } else {
+    document.getElementById('legend-img').src = '';
+    return;
+  }
+
+  const legendUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=${layerName}`;
+  document.getElementById('legend-img').src = legendUrl;
+}
+
+
+function updatePBPHHLegend(show) {
+  const legendContent = document.getElementById('legend-content');
+  const legendId = 'legend-img-pbphh';
+
+  // Hapus legend jika tidak show
+  if (!show) {
+    const el = document.getElementById(legendId);
+    if (el) el.remove();
+    return;
+  }
+
+  // Jika sudah ada, jangan tambah lagi
+  if (document.getElementById(legendId)) return;
+
+  const skalaColorMap = {
+    "Barecore Kapasitas Besar": "#3cb44b",
+    "Barecore Kapasitas Kecil": "#ffe119",
+    "Kayu Gergajian Kapasitas Besar": "#e6194B",
+    "Kayu Gergajian Kapasitas Kecil": "#f58231",
+    "Kayu Lapis Kapasitas Besar": "#4363d8",
+    "Kayu Lapis Kapasitas Kecil": "#911eb4",
+    "Veneer Kapasitas Besar": "#42d4f4",
+    "Veneer Kapasitas Kecil": "#f032e6",
+    "Wood Pellet Kapasitas Besar": "#000000",
+    "Wood Pellet Kapasitas Kecil": "#a9a9a9"
+  };
+
+  const legendHTML = `<div id="${legendId}" style="margin-bottom:12px;">
+    <b>Legenda PBPHH:</b><br>` +
+    Object.entries(skalaColorMap).map(([label, color]) => {
+      return `<div style="margin-bottom:3px;">
+        <span style="display:inline-block;width:12px;height:12px;background:${color};border:1px solid #333;margin-right:5px;"></span>${label}
+      </div>`;
+    }).join('') +
+    `</div>`;
+
+  legendContent.insertAdjacentHTML('beforeend', legendHTML);
+}
+
+map.on('singleclick', function (evt) {
+  const coordinate = evt.coordinate;
+  const viewResolution = map.getView().getResolution();
+  const viewProjection = map.getView().getProjection();
+  overlay.setPosition(undefined);
+  popup.innerHTML = 'Klik peta untuk info';
+
+  // --- PBPHH POPUP (VECTOR) ---
+  if (pbphhLayer && pbphhLayer.getVisible && pbphhLayer.getVisible()) {
+    let found = false;
+    map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+      if (layer === pbphhLayer) {
+        const props = feature.getProperties();
+        popup.innerHTML = `
+          <b>PBPHH</b><br>
+          <b>Nama:</b> ${props.Nama || '-'}<br>
+          <b>Skala Usaha:</b> ${props.Skala_Usah || '-'}<br>          
+        `;
+        overlay.setPosition(coordinate);
+        found = true;
+        return true; // stop iteration
+      }
+    });
+    if (found) return; // Jika sudah dapat PBPHH, hentikan popup WMS
+  }
+
+  if (ppkhPemdaLayer && ppkhPemdaLayer.getVisible && ppkhPemdaLayer.getVisible()) {
+    let found = false;
+    map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+      if (layer === ppkhPemdaLayer) {
+        const props = feature.getProperties();
+        popup.innerHTML = `
+          <b>PPKH PEMDA</b><br>
+          <b>Nama:</b> ${props.Nama_IPPKH || '-'}<br>
+          <b>Peruntukan:</b> ${props.Peruntukan || '-'}<br>
+          <b>No SK:</b> ${props.SK_PPKH || '-'}<br>
+          <b>Luas SK (ha):</b> ${parseFloat(props.LUAS_PPKH || 0).toLocaleString()}
+        `;
+        overlay.setPosition(coordinate);
+        found = true;
+        return true;
+      }
+    });
+    if (found) return; // Jika sudah dapat PPKH PEMDA, hentikan popup WMS
+  }	
+  // Daftar layer dan info legend (urutkan prioritas jika perlu)
+ const wmsLayers = [
+  {
+    layer: khdtkLayer,
+    name: 'KHDTK',
+    query: 'BPHL8:KHDTK_BPHL8',
+    parse: props => `
+      <b>KHDTK</b><br>
+      <b>Nama:</b> ${props.NAMOBJ || '-'}<br>
+      <b>Pengelola:</b> ${props.PNGLOL || '-'}<br>
+      <b>NO SK PENUNJUKAN:</b> ${props.NSKJUK || '-'}<br>
+      <b>Luas SK (ha):</b> ${parseFloat(props.LSSK || 0).toLocaleString()}
+    `
+  },
+   {
+    layer: ppkhLayer,
+    name: 'PPKH OP',
+    query: 'BPHL8:PPKH_OP_BPHL8',
+    parse: props => `
+      <b>PPKH Operasional</b><br>
+      <b>Nama:</b> ${props.NAMA_PPKH || '-'}<br>
+      <b>Jenis:</b> ${props.JENIS_PPKH || '-'}<br>
+      <b>NO SK:</b> ${props.NO_PPKH || '-'}<br>
+      <b>Luas SK (ha):</b> ${parseFloat(props.LUAS_PPKH || 0).toLocaleString()}
+    `
+  },
+  {
+    layer: ppkhexpLayer,
+    name: 'PPKH EXP',
+    query: 'BPHL8:PPKH_EXP_JATIM',
+    parse: props => `
+      <b>PPKH Eksplorasi</b><br>
+      <b>Nama:</b> ${props.NAMA_PPKH || '-'}<br>
+      <b>Jenis:</b> ${props.JENIS_PPKH || '-'}<br>
+      <b>NO SK:</b> ${props.NO_PPKH || '-'}<br>
+      <b>Luas SK (ha):</b> ${parseFloat(props.LUAS_PPKH || 0).toLocaleString()}
+    `
+  },
+     {
+      layer: ppkhPemdaLayer,
+      name: 'PPKH PEMDA',
+      query: 'BPHL8:PPKH_PEMDA',
+      parse: props => `
+      <b>PPKH PEMDA</b><br>
+      <b>Nama:</b> ${props.Nama_IPPKH || '-'}<br>
+      <b>Peruntukan:</b> ${props.Peruntukan || '-'}<br>
+      <b>NO SK:</b> ${props.SK_PPKH || '-'}<br>
+      <b>Luas SK (ha):</b> ${parseFloat(props.LUAS_PPKH || 0).toLocaleString()}
+    `
+  },	 
+  {
+    layer: pphkmLayer,
+    name: 'PPHKM',
+    query: 'BPHL8:PPHKM_BPHL8',
+    parse: props => `
+      <b>PPHKM</b><br>
+      <b>Nama:</b> ${props.NAMA_KELOM || '-'}<br>
+      <b>Desa:</b> ${props.NAMA_DESA || '-'}<br>
+      <b>NO SK:</b> ${props.NO_SK_PPHK || '-'}<br>
+      <b>Luas SK (ha):</b> ${parseFloat(props.LUAS_PPHKM || 0).toLocaleString()}
+    `
+  },
+  {
+    layer: pphdLayer,
+    name: 'PPHD',
+    query: 'BPHL8:PPHD_BPHL8',
+    parse: props => `
+      <b>PPHD</b><br>
+      <b>Nama:</b> ${props.NAMA_LD || '-'}<br>
+      <b>NO SK:</b> ${props.NO_SK_PPHD || '-'}<br>
+      <b>Luas SK (ha):</b> ${parseFloat(props.LUAS_PPHD || 0).toLocaleString()}
+    `
+  },
+  {
+    layer: pkkLayer,
+    name: 'PKK',
+    query: 'BPHL8:PKK_BPHL8',
+    parse: props => `
+      <b>PKK</b><br>
+      <b>Nama:</b> ${props.NAMA_KELOM || '-'}<br>
+      <b>Desa:</b> ${props.NAMA_DESA || '-'}<br>
+      <b>NO SK:</b> ${props.NO_SK_PKK || '-'}<br>
+      <b>Luas SK (ha):</b> ${parseFloat(props.LUAS_PKK || 0).toLocaleString()}
+    `
+  },
+  {
+    layer: iphpsLayer,
+    name: 'IPHPS',
+    query: 'BPHL8:IPHPS_BPHL8',
+    parse: props => `
+      <b>IPHPS</b><br>
+      <b>Nama:</b> ${props.NAMA_KELOM || '-'}<br>
+      <b>Desa:</b> ${props.NAMA_DESA || '-'}<br>
+      <b>NO SK:</b> ${props.NO_SK_IPHP || '-'}<br>
+      <b>Luas (ha):</b> ${parseFloat(props.LUAS_IPHPS || 0).toLocaleString()}
+    `
+  },
+  {
+    layer: pippibLayer,
+    name: 'PIPPIB 2025',
+    query: 'BPHL8:PIPPIB2025_BPHL8',
+    parse: props => `
+      <b>PIPPIB 2025</b><br>
+      <b>PIPPIB:</b> ${props.PIPPIB || '-'}<br>    
+      <b>Luas (ha):</b> ${parseFloat(props.LUAS || 0).toLocaleString()}
+    `
+  },
+  {
+    layer: piapsLayer,
+    name: 'PIAPS9',
+    query: 'BPHL8:PIAPS9_BPHL8',
+    parse: props => `
+      <b>PIAPS9</b><br>
+      <b>KRITERIA:</b> ${props.Kriteria || '-'}<br>
+      <b>KETERANGAN:</b> ${props.KETERANGAN || '-'}<br>
+      <b>Luas (ha):</b> ${parseFloat(props.LUAS || 0).toLocaleString()}
+    `
+  },
+  {
+    layer: foluJL_Layer,
+    name: 'FOLU JL',
+    query: 'BPHL8:FOLU_JL_BPHL8',
+    parse: props => `
+      <b>FOLU JL</b><br>
+      <b>RENOPS:</b> ${props.RENOPS_JAW || '-'}<br>
+      <b>Luas (ha):</b> ${parseFloat(props.LUAS || 0).toLocaleString()}
+    `
+  },
+  {
+    layer: khdpkLayer,
+    name: 'KHDPK',
+    query: 'BPHL8:KHDPK149_BPHL8',
+    parse: props => `
+      <b>KHDPK</b><br>
+      <b>KRITERIA:</b> ${props.KRITERIA || '-'}<br>
+      <b>Luas (ha):</b> ${parseFloat(props.LUAS || 0).toLocaleString()}
+    `
+  },
+  {
+    layer: perhutaniLayer,
+    name: 'PERHUTANI',
+    query: 'BPHL8:PERHUTANI',
+    parse: props => {
+      const fungsiKode = props.FUNGSIKWS || '';
+      const fungsiNama = fungsiLookup[fungsiKode] || '(Tidak dikenal)';
+      return `
+        <b>PERHUTANI</b><br>
+        <b>Fungsi:</b> ${fungsiKode}<br>
+        <b>Keterangan:</b> ${fungsiNama}
+      `;
+    }
+  },
+  {
+    layer: fungHutnLayer,
+    name: 'Fungsi Kawasan',
+    query: prov => prov === 'WILKER' ? 'BPHL8:FUNGHTN_WILKER' : 'BPHL8:FUNGHTN_' + prov,
+    parse: (props, prov) => {
+      const fungsiKode = props.FUNGSIKWS || '';
+      const fungsiNama = fungsiLookup[fungsiKode] || '(Tidak dikenal)';
+      return `
+        <b>Fungsi Kawasan</b><br>
+        <b>Provinsi:</b> ${prov}<br>
+        <b>No. SK:</b> ${props.NOSKKWS || '-'}<br>
+        <b>Nama:</b> ${props.NAMOBJ || '-'}<br>
+        <b>Fungsi:</b> ${fungsiKode}<br>
+        <b>Keterangan:</b> ${fungsiNama}
+      `;
+    }
+  }
+];
+
+  // Cek satu per satu, tampilkan popup pada layer pertama yang dapat info
+  const prov = document.getElementById('provinsi').value;
+  (async function() {
+    for (const item of wmsLayers) {
+      if (item.layer && item.layer.getVisible && item.layer.getVisible()) {
+        let queryLayer = typeof item.query === 'function' ? item.query(prov) : item.query;
+        const url = item.layer.getSource().getFeatureInfoUrl(
+          coordinate,
+          viewResolution,
+          viewProjection,
+          {
+            'INFO_FORMAT': 'application/json',
+            'QUERY_LAYERS': queryLayer,
+            'FEATURE_COUNT': 1
+          }
+        );
+        if (url) {
+          try {
+            const resp = await fetch(url);
+            const data = await resp.json();
+if (data.features && data.features.length > 0) {
+  const props = data.features[0].properties;
+  popup.innerHTML = typeof item.parse === 'function'
+    ? item.parse(props, prov)
+    : '';
+  overlay.setPosition(coordinate);
+
+  // --- UNIVERSAL HIGHLIGHT & ZOOM REKAP ---
+  // Hapus highlight lama
+  document.querySelectorAll('.rekap-highlight-row').forEach(row => row.classList.remove('rekap-highlight-row'));
+
+  // KHDTK
+if (item.name === 'KHDTK' && props && props.NAMOBJ) {
+  const row = document.querySelector(`.rekap-khdtk-row[data-nama="${props.NAMOBJ.replace(/"/g, '&quot;')}"]`);
+  if (row) {
+    row.classList.add('rekap-highlight-row');
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+// PPKH OP
+if (item.name === 'PPKH OP' && props && props.NAMA_PPKH) {
+  const row = document.querySelector(`.rekap-ppkh-row[data-nama="${props.NAMA_PPKH.replace(/"/g, '&quot;')}"]`);
+  if (row) {
+    row.classList.add('rekap-highlight-row');      }
+}
+// PPKH EXP
+if (item.name === 'PPKH EXP' && props && props.NAMA_PPKH) {
+  const row = document.querySelector(`.rekap-ppkhexp-row[data-nama="${props.NAMA_PPKH.replace(/"/g, '&quot;')}"]`);
+  if (row) {
+    row.classList.add('rekap-highlight-row');      }
+}
+// --- PPKH PEMDA ---
+if (item.name === 'PPKH PEMDA' && props && props.Nama_IPPKH) {
+  const row = document.querySelector(`.rekap-ppkhpemda-row[data-nama="${props.Nama_IPPKH.replace(/"/g, '&quot;')}"]`);
+  if (row) {
+    row.classList.add('rekap-highlight-row');
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+	
+// PPHKM
+if (item.name === 'PPHKM' && props && props.NAMA_KELOM) {
+  const row = document.querySelector(`.rekap-pphkm-row[data-nama="${props.NAMA_KELOM.replace(/"/g, '&quot;')}"]`);
+  if (row) {
+    row.classList.add('rekap-highlight-row');    
+  }
+}
+// PKK
+if (item.name === 'PKK' && props && props.NAMA_KELOM) {
+  const row = document.querySelector(`.rekap-pkk-row[data-nama="${props.NAMA_KELOM.replace(/"/g, '&quot;')}"]`);
+  if (row) {
+    row.classList.add('rekap-highlight-row');    
+  }
+}
+// PPHD
+if (item.name === 'PPHD' && props && props.NAMA_LD) {
+  const row = document.querySelector(`.rekap-pphd-row[data-nama="${props.NAMA_LD.replace(/"/g, '&quot;')}"]`);
+  if (row) {
+    row.classList.add('rekap-highlight-row');    
+  }
+}
+// IPHPS
+if (item.name === 'IPHPS' && props && props.NAMA_KELOM) {
+  const row = document.querySelector(`.rekap-iphps-row[data-nama="${props.NAMA_KELOM.replace(/"/g, '&quot;')}"]`);
+  if (row) {
+    row.classList.add('rekap-highlight-row');    
+  }
+}
+  // KHDPK
+  if (item.name === 'KHDPK' && props && props.KRITERIA) {
+    const row = document.querySelector(`.rekap-khdpk-row[data-KRITERIA="${props.KRITERIA.replace(/"/g, '&quot;')}"]`);
+    if (row) {
+      row.classList.add('rekap-highlight-row');
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+  // PIPPIB
+  if (item.name === 'PIPPIB 2025' && props && props.PIPPIB) {
+    const row = document.querySelector(`.rekap-pippib-row[data-pippib="${props.PIPPIB.replace(/"/g, '&quot;')}"]`);
+    if (row) {
+      row.classList.add('rekap-highlight-row');
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+  // PIAPS
+  if (item.name === 'PIAPS9' && props && props.Kriteria) {
+    const row = document.querySelector(`.rekap-piaps-row[data-kriteria="${props.Kriteria.replace(/"/g, '&quot;')}"]`);
+    if (row) {
+      row.classList.add('rekap-highlight-row');      
+    }
+  }
+  // FOLU JL
+  if (item.name === 'FOLU JL' && props && props.RENOPS_JAW) {
+    const row = document.querySelector(`.rekap-folu-row[data-renops="${props.RENOPS_JAW.replace(/"/g, '&quot;')}"]`);
+    if (row) {
+      row.classList.add('rekap-highlight-row');
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  return; // Stop di layer pertama yang dapat info
+}
+          } catch (e) {
+            // skip error, lanjut ke layer berikutnya
+          }
+        }
+      }
+    }
+    // Jika tidak ada info
+    popup.innerHTML = 'Tidak ada data.';
+    overlay.setPosition(coordinate);
+  })();
+});
+
+function updateAllLegendsAndRekap() {
+  const prov = document.getElementById('provinsi').value;
+  const provName = provMapping[prov] || '';
+  if (!prov) return;
+
+  // Update legend URLs
+  document.getElementById('legend-img').src =
+    `https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:FUNGHTN_WILKER`;
+  document.getElementById('legend-img').src =
+    `https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:FUNGHTN_${prov}`; 
+  document.getElementById('legend-khdpk').src =
+    `https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:KHDPK149_BPHL8`;
+  document.getElementById('legend-folu').src =
+    `https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:FOLU_JL_BPHL8`;
+
+  // Recap layers for WILKER
+ if (prov === 'WILKER') {
+    rekapLuasByKolom({
+      typeNames: 'BPHL8:FUNGHTN_WILKER',
+      label: 'Fungsi Kawasan',
+      groupBy: 'FUNGSIKWS',
+      targetDivId: 'rekap-funghutn'
+    });
+  } else {
+    rekapLuasByKolom({
+      typeNames: `BPHL8:FUNGHTN_${prov}`,
+      label: 'Fungsi Kawasan',
+      groupBy: 'FUNGSIKWS',
+      targetDivId: 'rekap-funghutn'
+    });
+  }
+  
+  rekapLuasByKolom({
+    typeNames: 'BPHL8:KHDPK149_BPHL8',
+    label: 'KHDPK',
+    groupBy: 'KRITERIA',
+    targetDivId: 'rekap-khdpk'
+  });
+
+  rekapLuasByKolom({
+    typeNames: 'BPHL8:PERHUTANI',
+    label: 'PERHUTANI',
+    groupBy: 'FUNGSIKWS',
+    targetDivId: 'rekap-perhutani'
+  });
+
+  rekapLuasByKolom({
+    typeNames: 'BPHL8:FOLU_JL_BPHL8',
+    label: 'FOLU JL',
+    groupBy: 'RENOPS_JAW',
+    targetDivId: 'rekap-folu'
+  });  
+}
+
+function rekapLuasByKolom({ typeNames, label, groupBy, targetDivId }) {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = provMapping[prov] || '';
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=${typeNames}&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(wfsUrl)
+    .then(response => response.json())
+    .then(data => {
+      if (!data || !data.features || data.features.length === 0) {
+        document.getElementById(targetDivId).innerHTML = `<div style="color:red;">Tidak ada data untuk layer ${label}</div>`;
+        return;
+      }
+
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(data, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+
+      if (!features || features.length === 0) {
+        document.getElementById(targetDivId).innerHTML = `<div style="color:red;">Tidak ada fitur untuk layer ${label}</div>`;
+        return;
+      }
+
+      const hasil = {};
+      let totalLuas = 0;
+
+      features.forEach(f => {
+        if (f && f.get && f.getGeometry()) {
+          const key = f.get(groupBy) || '(Tidak diketahui)';
+          const luas = ol.sphere.getArea(f.getGeometry(), { projection: 'EPSG:3857' });
+          if (!hasil[key]) hasil[key] = { luas: 0 };
+          hasil[key].luas += luas;
+          totalLuas += luas;
+        }
+      });
+
+      // Logic khusus FUNGSI KAWASAN/FUNGHTN: tampilkan max 5 baris & scrollable
+   let isFunghutn = (
+  label === 'Fungsi Kawasan Hutan' || 
+  label === 'FUNGHTN' || 
+  label.toUpperCase().includes('FUNGSI KAWASAN')
+);
+let html = `<b>Rekap Luas ${label}:</b><br>`;
+
+let keys = Object.keys(hasil);
+if (isFunghutn) {
+  keys = keys.sort((a, b) => hasil[b].luas - hasil[a].luas); // urut luas terbesar
+  if (keys.length > 5) {
+    html += `<div style="color:#888;font-size:12px;margin-bottom:3px;">Data banyak, bisa discroll &darr;</div>`;
+  }
+  html += `<div style="max-height:175px;overflow-y:auto;border-radius:8px;box-shadow:0 1px 8px #eee;">`;
+} else {
+  html += `<div>`;
+}
+
+html += `<table border="1" cellpadding="4" style="border-collapse:collapse; font-size:13px; margin-top:6px; width:100%;">
+  <thead style="background:#f0f0f0;">
+    <tr><th>No</th><th>${groupBy}</th><th>Kalkulasi Luas (ha)</th></tr>
+  </thead><tbody>`;
+
+      keys.forEach((k, i) => {
+        const labelFungsi = fungsiLookup[k] || k;
+        if (label === 'FOLU JL') {
+          html += `<tr class="rekap-folu-row" data-renops="${k.replace(/"/g, '&quot;')}">
+            <td>${i + 1}</td>
+            <td><a href="#" class="zoom-folu" data-key="${k.replace(/"/g, '&quot;')}">${labelFungsi}</a></td>
+            <td style="text-align:right;">${(hasil[k].luas / 10000).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          </tr>`;
+        } else if (label === 'KHDPK') {
+          html += `<tr class="rekap-khdpk-row" data-KRITERIA="${k.replace(/"/g, '&quot;')}">
+            <td>${i + 1}</td>
+            <td><a href="#" class="zoom-khdpk" data-key="${k.replace(/"/g, '&quot;')}">${labelFungsi}</a></td>
+            <td style="text-align:right;">${(hasil[k].luas / 10000).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          </tr>`;
+        } else if (label === 'PERHUTANI') {
+          html += `<tr class="rekap-perhutani-row" data-fungsikws="${k.replace(/"/g, '&quot;')}">
+            <td>${i + 1}</td>
+            <td><a href="#" class="zoom-perhutani" data-key="${k.replace(/"/g, '&quot;')}">${labelFungsi}</a></td>
+            <td style="text-align:right;">${(hasil[k].luas / 10000).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          </tr>`;  
+        } else if (label === 'PIPPIB2025') {
+          html += `<tr class="rekap-pippib-row" data-pippib="${k.replace(/"/g, '&quot;')}">
+            <td>${i + 1}</td>
+            <td><a href="#" class="zoom-pippib" data-key="${k.replace(/"/g, '&quot;')}">${labelFungsi}</a></td>
+            <td style="text-align:right;">${(hasil[k].luas / 10000).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          </tr>`;
+        } else {
+          html += `<tr>
+            <td>${i + 1}</td>
+            <td>${labelFungsi}</td>
+            <td style="text-align:right;">${(hasil[k].luas / 10000).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          </tr>`;
+        }
+      });
+
+      html += `<tr style="background:#e0ffe0;font-weight:bold;">
+        <td colspan="2" style="text-align:right;">Total</td>
+        <td style="text-align:right;">${(totalLuas / 10000).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+      </tr></tbody></table>`;
+
+      if (isFunghutn) html += `</div>`;
+
+      document.getElementById(targetDivId).innerHTML = html;
+
+      // --- (Event zoom baris tabel tetap, tidak perlu diubah di sini) ---
+    })
+    .catch(err => {
+      console.error('Gagal mengambil data:', err);
+      document.getElementById(targetDivId).innerHTML = `<div style="color:red;">Gagal mengambil data untuk layer ${label}: ${err}</div>`;
+    });
+}
+
+
+window.addEventListener('DOMContentLoaded', function() {
+  // Disable semua checkbox layer di awal
+ document.querySelectorAll('input[type="checkbox"][id^="cb-"]').forEach(cb => {
+  cb.disabled = true;
+});
+
+
+  // Inisialisasi dropdown overlap di awal (akan terisi tempLayers jika sudah ada upload)
+  refreshOverlapDropdowns();
+
+  // (tambahkan hal lain jika perlu, misal setup drag modal, dsb)
+});
+
+
+  </script>
+</body>
+</html>
+
+
