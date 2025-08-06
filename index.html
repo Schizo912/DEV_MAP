@@ -1330,7 +1330,7 @@ function toggleLegend() {
 
 function showRekapModalJASLING() {
   rekapModalTitle.textContent = "Rekap Jasa Lingkungan";
-  rekapModalBody.innerHTML = "<div style='color:#888;'>Mengambil data...</div>";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Memuat data...</div>";
   rekapModal.style.display = "block";
 
   const prov = document.getElementById('provinsi').value;
@@ -1344,44 +1344,84 @@ function showRekapModalJASLING() {
   let cql = `WADMPR='${provName}'`;
   if (kab) cql += ` AND WADMKK='${kab}'`;
 
-  const url = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:JASLING_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+  const wfsUrl = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:JASLING_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
 
-  fetch(url)
+  fetch(wfsUrl)
     .then(r => r.json())
-    .then(json => {
+    .then(geojson => {
       const format = new ol.format.GeoJSON();
-      const features = format.readFeatures(json, {
-        dataProjection: 'EPSG:32749',
+      const features = format.readFeatures(geojson, {
+        dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
 
-      let uniqueSet = new Set();
-      let totalArea = 0;
+      if (!features || features.length === 0) {
+        rekapModalBody.innerHTML = '<i style="color:red;">Tidak ada data Jasa Lingkungan untuk wilayah ini.</i>';
+        return;
+      }
 
-      features.forEach(f => {
-        const nama = f.get('WISATA');
-        if (nama) uniqueSet.add(nama);
+      let totalLuas = 0;
+      let html = `
+      <div class="rekap-table-scroll">
+        <table class="rekap-modal-table">
+          <thead>
+            <tr>
+              <th class="nomor" style="width:40px;">No</th>
+              <th style="width:250px;">Nama Wisata</th>
+              <th class="angka" style="width:130px;">Luas (ha)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
 
-        const geom = f.getGeometry();
-        if (geom && geom.getType().includes('Polygon')) {
-          const area = ol.sphere.getArea(geom, { projection: 'EPSG:3857' });
-          totalArea += area;
-        }
+      features.forEach((f, i) => {
+        const wisata = f.get('WISATA') || '-';
+        const luasGeom = ol.sphere.getArea(f.getGeometry(), { projection: 'EPSG:3857' }) / 10000;
+        totalLuas += luasGeom;
+        html += `<tr class="rekap-jasling-row" data-nama="${wisata.replace(/"/g, '&quot;')}">
+          <td class="nomor">${i + 1}</td>
+          <td><a href="#" class="zoom-jasling" data-idx="${i}">${wisata}</a></td>
+          <td class="angka">${luasGeom.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+        </tr>`;
       });
 
-      const html = `
-        <table border="1" style="border-collapse:collapse; font-size:13px; margin-top:5px; min-width:320px;">
-          <tr><th>Nama Layer</th><th>Jumlah</th><th>Luas (Ha)</th></tr>
-          <tr>
-            <td>Jasa Lingkungan*</td>
-            <td style="text-align:center;">${uniqueSet.size}</td>
-            <td style="text-align:right;">${(totalArea / 10000).toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-          </tr>
-        </table>`;
+      html += `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2"><b>Total</b></td>
+              <td class="angka"><b>${totalLuas.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</b></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>`;
+
       rekapModalBody.innerHTML = html;
+
+      // Event listener zoom & highlight
+      rekapModalBody.querySelectorAll('.zoom-jasling').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const idx = parseInt(this.dataset.idx, 10);
+          const feature = features[idx];
+          if (feature) {
+            const extent = feature.getGeometry().getExtent();
+            map.getView().fit(extent, { padding: [40, 40, 40, 40], duration: 800, maxZoom: 16 });
+
+            // Clear row highlight
+            rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row =>
+              row.classList.remove('rekap-highlight-row')
+            );
+
+            const nama = feature.get('WISATA') || '-';
+            const row = rekapModalBody.querySelector(`.rekap-jasling-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
+            if (row) row.classList.add('rekap-highlight-row');
+          }
+        });
+      });
     })
     .catch(() => {
-      rekapModalBody.innerHTML = "<i style='color:red;'>Gagal mengambil data Jasa Lingkungan.</i>";
+      rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data Jasa Lingkungan.</i>';
     });
 }
 
@@ -2766,8 +2806,6 @@ function clearAllCheckboxes() {
     }
   });
 }
-
-
 // Array untuk menyimpan data layer sementara
 let tempLayers = []; // {filename, olLayer, aktif, warna}
 
@@ -4110,8 +4148,6 @@ function togglePPHD() {
  
 }
 
-
-
 function togglePKK() {
   const prov = document.getElementById('provinsi').value;
   const kab = document.getElementById('kabupaten').value;
@@ -4156,7 +4192,6 @@ function togglePKK() {
   );
  
 }
-
 
 function togglePIPPIB2025() {
   const prov = document.getElementById('provinsi').value;
@@ -4251,12 +4286,8 @@ function togglePIAPS9() {
     'PIAPS9',
     'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:PIAPS9_BPHL8'
   );
-
   
 }
-
-
-
 
 function toggleIphps() {
   const prov = document.getElementById('provinsi').value;
@@ -4303,7 +4334,6 @@ function toggleIphps() {
   
 }
 
-
 function updateLegend() {
   const prov = document.getElementById('provinsi').value;
 
@@ -4321,7 +4351,6 @@ function updateLegend() {
   document.getElementById('legend-img').src = legendUrl;
 }
 
-
 function updatePBPHHLegend(show) {
   const legendContent = document.getElementById('legend-content');
   const legendId = 'legend-img-pbphh';
@@ -4332,7 +4361,6 @@ function updatePBPHHLegend(show) {
     if (el) el.remove();
     return;
   }
-
   // Jika sudah ada, jangan tambah lagi
   if (document.getElementById(legendId)) return;
 
@@ -4940,6 +4968,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
