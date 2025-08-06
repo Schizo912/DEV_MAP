@@ -4396,7 +4396,7 @@ if (jaslingLayer && jaslingLayer.getVisible && jaslingLayer.getVisible()) {
     map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
       if (layer === jaslingLayer) {
         const props = feature.getProperties();
-        const wisata = props.WISATA || '(tidak bernama)';
+        const wisata = props.WISATA || props.wisata || '(tidak bernama)';
         const luas = Number(props.LUAS || 0).toLocaleString('id-ID', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
@@ -4944,6 +4944,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
