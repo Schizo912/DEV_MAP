@@ -1165,7 +1165,7 @@ function showRekapGabungan() {
     { name: "PPKH_EXP_JATIM", id: "NAMA_PPKH", luas: true, label: "PPKH Eksplorasi" },
     { name: "PPKH_OP_BPHL8", id: "NAMA_PPKH", luas: true, label: "PPKH Operasional" },
     { name: "PPKH_PEMDA", id: "Nama_IPPKH", luas: true, label: "PPKH Izin PEMDA", utm: "EPSG:32749" },
-    { name: "JASLING", id: "WISATA", luas: true, label: "Jasa Lingkungan", utm: "EPSG:32749" },
+    { name: "JASLING_BPHL8", id: "WISATA", luas: true, label: "Jasa Lingkungan", utm: "EPSG:32749" },
     { name: "KHDTK_BPHL8", id: "NAMOBJ", luas: true, label: "KHDTK" },
     { name: "KHDPK149_BPHL8", id: null, luas: true, label: "KHDPK" },
     { name: "PERHUTANI", id: null, luas: true, label: "PERHUTANI" }
@@ -3045,7 +3045,7 @@ function toggleLayerWMS(layerName, layerVarName) {
       layerName = 'BPHL8:KHDTK_BPHL8'; // Update for KHDTK
     } else if (layerName === 'FOLU') {
       layerName = 'BPHL8:FOLU_JL_BPHL8';
-     } else if (layerName === 'Jasa Lingkungan') {
+     } else if (layerName === 'jasling') {
       layerName = 'BPHL8:JASLING_BPHL8';// Update for FOLU JL
     } else if (layerName === 'PPHKM') {
       layerName = 'BPHL8:PPHKM_BPHL8'; 
@@ -4904,6 +4904,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
