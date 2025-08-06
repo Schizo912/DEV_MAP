@@ -1351,8 +1351,8 @@ function showRekapModalJASLING() {
     .then(geojson => {
       const format = new ol.format.GeoJSON();
       const features = format.readFeatures(geojson, {
-        dataProjection: 'EPSG:32749',
-        featureProjection: 'EPSG:3857'
+        dataProjection: 'EPSG:32749',  // aslinya UTM 49S
+        featureProjection: 'EPSG:3857' // proyeksi tampilan OL
       });
 
       if (!features || features.length === 0) {
@@ -1398,27 +1398,26 @@ function showRekapModalJASLING() {
 
       rekapModalBody.innerHTML = html;
 
-      // Event listener zoom
+      // Zoom dan highlight
       rekapModalBody.querySelectorAll('.zoom-jasling').forEach(link => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
           const idx = parseInt(this.dataset.idx, 10);
           const feature = features[idx];
           if (feature) {
-            const extent32749 = feature.getGeometry().getExtent();
-            const center32749 = ol.extent.getCenter(extent32749);
-            const center3857 = ol.proj.transform(center32749, 'EPSG:32749', 'EPSG:3857');
-            map.getView().animate({
-              center: center3857,
+            const extent = feature.getGeometry().getExtent(); // Sudah EPSG:3857
+            map.getView().fit(extent, {
+              padding: [40, 40, 40, 40],
               duration: 800,
-              zoom: 14
+              maxZoom: 16
             });
 
-            // Highlight baris
+            // Hapus highlight lama
             rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row =>
               row.classList.remove('rekap-highlight-row')
             );
 
+            // Tambahkan highlight ke baris aktif
             const nama = feature.get('WISATA') || '-';
             const row = rekapModalBody.querySelector(`.rekap-jasling-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
             if (row) row.classList.add('rekap-highlight-row');
@@ -4974,6 +4973,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
