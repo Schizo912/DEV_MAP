@@ -1351,7 +1351,7 @@ function showRekapModalJASLING() {
     .then(json => {
       const format = new ol.format.GeoJSON();
       const features = format.readFeatures(json, {
-        dataProjection: 'EPSG:4326',
+        dataProjection: 'EPSG:32749',
         featureProjection: 'EPSG:3857'
       });
 
@@ -4913,6 +4913,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
