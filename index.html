@@ -3730,7 +3730,6 @@ function toggleKHDTK() {
   
 }
 
-
 function toggleJASLING() {
   const prov = document.getElementById('provinsi').value;
   const kab = document.getElementById('kabupaten').value;
@@ -3738,9 +3737,15 @@ function toggleJASLING() {
   const show = document.getElementById('cb-jasling').checked;
   const rekapBox = document.getElementById('rekap-jasling');
 
+  // Hapus layer jika ada
   if (jaslingLayer) {
     map.removeLayer(jaslingLayer);
     jaslingLayer = null;
+
+    // Sembunyikan legend
+    const legendImg = document.getElementById('legend-img');
+    legendImg.style.display = 'none';
+    legendImg.src = '';
   }
 
   if (!show || !prov || prov === 'WILKER') {
@@ -3765,6 +3770,13 @@ function toggleJASLING() {
   });
 
   map.addLayer(jaslingLayer);
+
+  // Tampilkan legend (tanpa bikin fungsi baru)
+  const legendImg = document.getElementById('legend-img');
+  legendImg.src = 'https://gs.schizone.biz.id/geoserver/BPHL8/wms' +
+    '?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png' +
+    '&LAYER=BPHL8:JASLING_BPHL8&WIDTH=20&HEIGHT=20';
+  legendImg.style.display = 'block';
 }
 
 function toggleFOLUJL() {
@@ -4973,6 +4985,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
