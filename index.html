@@ -3737,30 +3737,30 @@ function toggleJASLING() {
   const show = document.getElementById('cb-jasling').checked;
   const rekapBox = document.getElementById('rekap-jasling');
 
-  // Hapus layer jika ada
+  // Hapus layer dan legenda jika layer aktif
   if (jaslingLayer) {
     map.removeLayer(jaslingLayer);
     jaslingLayer = null;
-
-    // Sembunyikan legend
-    const legendImg = document.getElementById('legend-img');
-    legendImg.style.display = 'none';
-    legendImg.src = '';
+    hideLegend('jasling');
   }
 
+  // Validasi input dan checkbox
   if (!show || !prov || prov === 'WILKER') {
     rekapBox.innerHTML = '';
     return;
   }
 
+  // Susun filter CQL
   let cql = `WADMPR='${provName}'`;
   if (kab) cql += ` AND WADMKK='${kab}'`;
 
+  // Buat vector source dari WFS
   const vectorSource = new ol.source.Vector({
     format: new ol.format.GeoJSON(),
     url: `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:JASLING_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`
   });
 
+  // Tambahkan layer vector dengan style
   jaslingLayer = new ol.layer.Vector({
     source: vectorSource,
     style: new ol.style.Style({
@@ -3771,12 +3771,12 @@ function toggleJASLING() {
 
   map.addLayer(jaslingLayer);
 
-  // Tampilkan legend (tanpa bikin fungsi baru)
-  const legendImg = document.getElementById('legend-img');
-  legendImg.src = 'https://gs.schizone.biz.id/geoserver/BPHL8/wms' +
-    '?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png' +
-    '&LAYER=BPHL8:JASLING_BPHL8&WIDTH=20&HEIGHT=20';
-  legendImg.style.display = 'block';
+  // Tampilkan legenda
+  showLegend(
+    'jasling',
+    'Jasa Lingkungan',
+    'https://gs.schizone.biz.id/geoserver/BPHL8/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&LAYER=BPHL8:JASLING_BPHL8'
+  );
 }
 
 function toggleFOLUJL() {
@@ -4985,6 +4985,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
