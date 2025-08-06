@@ -1328,6 +1328,63 @@ function toggleLegend() {
   btn.innerText = isHidden ? '📕' : '📋'; // Ikon berubah
 }
 
+function showRekapModalJASLING() {
+  rekapModalTitle.textContent = "Rekap Jasa Lingkungan";
+  rekapModalBody.innerHTML = "<div style='color:#888;'>Mengambil data...</div>";
+  rekapModal.style.display = "block";
+
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  if (!provName) {
+    rekapModalBody.innerHTML = "<i style='color:red;'>Provinsi tidak valid.</i>";
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  const url = `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:JASLING_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`;
+
+  fetch(url)
+    .then(r => r.json())
+    .then(json => {
+      const format = new ol.format.GeoJSON();
+      const features = format.readFeatures(json, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
+      });
+
+      let uniqueSet = new Set();
+      let totalArea = 0;
+
+      features.forEach(f => {
+        const nama = f.get('WISATA');
+        if (nama) uniqueSet.add(nama);
+
+        const geom = f.getGeometry();
+        if (geom && geom.getType().includes('Polygon')) {
+          const area = ol.sphere.getArea(geom, { projection: 'EPSG:3857' });
+          totalArea += area;
+        }
+      });
+
+      const html = `
+        <table border="1" style="border-collapse:collapse; font-size:13px; margin-top:5px; min-width:320px;">
+          <tr><th>Nama Layer</th><th>Jumlah</th><th>Luas (Ha)</th></tr>
+          <tr>
+            <td>Jasa Lingkungan*</td>
+            <td style="text-align:center;">${uniqueSet.size}</td>
+            <td style="text-align:right;">${(totalArea / 10000).toFixed(2)}</td>
+          </tr>
+        </table>`;
+      rekapModalBody.innerHTML = html;
+    })
+    .catch(() => {
+      rekapModalBody.innerHTML = "<i style='color:red;'>Gagal mengambil data Jasa Lingkungan.</i>";
+    });
+}
+
 // --- Fungsi untuk KHDPK
 function showRekapModalKhdpk() {
   rekapModalTitle.textContent = "Rekap KHDPK";
@@ -4847,6 +4904,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
