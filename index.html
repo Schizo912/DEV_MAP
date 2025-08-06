@@ -4538,6 +4538,15 @@ map.on('singleclick', function (evt) {
       <b>Luas (ha):</b> ${parseFloat(props.LUAS || 0).toLocaleString()}
     `
   },
+   {
+    layer: jaslingLayer,
+    name: 'jasling',
+    query: 'BPHL8:JASLING_BPHL8',
+    parse: props => `
+      <b>WISATA</b><br>    
+      <b>Luas (ha):</b> ${parseFloat(props.LUAS || 0).toLocaleString()}
+    `
+  },	 
   {
     layer: khdpkLayer,
     name: 'KHDPK',
@@ -4904,6 +4913,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
