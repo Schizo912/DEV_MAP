@@ -1400,24 +1400,29 @@ function showRekapModalJASLING() {
 
       // Event listener zoom & highlight
       rekapModalBody.querySelectorAll('.zoom-jasling').forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          const idx = parseInt(this.dataset.idx, 10);
-          const feature = features[idx];
-          if (feature) {
-            const extent = feature.getGeometry().getExtent();
-            map.getView().fit(extent, { padding: [40, 40, 40, 40], duration: 800, maxZoom: 16 });
+       link.addEventListener('click', function(e) {
+  e.preventDefault();
+  const idx = parseInt(this.dataset.idx, 10);
+  const feature = features[idx];
+  if (feature) {
+    // Transform extent dari EPSG:32749 ke EPSG:3857
+    const extent = ol.proj.transformExtent(
+      feature.getGeometry().getExtent(),
+      'EPSG:32749',
+      'EPSG:3857'
+    );
+    map.getView().fit(extent, { padding: [40, 40, 40, 40], duration: 800, maxZoom: 16 });
 
-            // Clear row highlight
-            rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row =>
-              row.classList.remove('rekap-highlight-row')
-            );
+    // Clear row highlight
+    rekapModalBody.querySelectorAll('.rekap-highlight-row').forEach(row =>
+      row.classList.remove('rekap-highlight-row')
+    );
 
-            const nama = feature.get('WISATA') || '-';
-            const row = rekapModalBody.querySelector(`.rekap-jasling-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
-            if (row) row.classList.add('rekap-highlight-row');
-          }
-        });
+    const nama = feature.get('WISATA') || '-';
+    const row = rekapModalBody.querySelector(`.rekap-jasling-row[data-nama="${nama.replace(/"/g, '&quot;')}"]`);
+    if (row) row.classList.add('rekap-highlight-row');
+  }
+});
       });
     })
     .catch(() => {
@@ -4968,6 +4973,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
