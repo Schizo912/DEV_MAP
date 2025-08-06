@@ -1087,6 +1087,7 @@ let iphpsLayer = null;
 let highlightKHDTK = null;
 let perhutaniLayer = null;
 let ppkhexpLayer = null;
+let jaslingLayer = null;
 
 window._overlapLayer = null;  // Global! (WAJIB)
 
@@ -1164,6 +1165,7 @@ function showRekapGabungan() {
     { name: "PPKH_EXP_JATIM", id: "NAMA_PPKH", luas: true, label: "PPKH Eksplorasi" },
     { name: "PPKH_OP_BPHL8", id: "NAMA_PPKH", luas: true, label: "PPKH Operasional" },
     { name: "PPKH_PEMDA", id: "Nama_IPPKH", luas: true, label: "PPKH Izin PEMDA", utm: "EPSG:32749" },
+    { name: "JASLING", id: "WISATA", luas: true, label: "Jasa Lingkungan", utm: "EPSG:32749" },
     { name: "KHDTK_BPHL8", id: "NAMOBJ", luas: true, label: "KHDTK" },
     { name: "KHDPK149_BPHL8", id: null, luas: true, label: "KHDPK" },
     { name: "PERHUTANI", id: null, luas: true, label: "PERHUTANI" }
@@ -2446,8 +2448,7 @@ function showRekapModalPPKHPemda() {
       rekapModalBody.innerHTML = '<i style="color:red;">Gagal mengambil data PPKH PEMDA.</i>';
     });
 }
-
-	  
+  
 	  
 (function() {
   const modal = document.getElementById('rekap-modal-content');
@@ -2986,7 +2987,9 @@ function toggleLayerWMS(layerName, layerVarName) {
     } else if (layerName === 'KHDTK') {
       layerName = 'BPHL8:KHDTK_BPHL8'; // Update for KHDTK
     } else if (layerName === 'FOLU') {
-      layerName = 'BPHL8:FOLU_JL_BPHL8'; // Update for FOLU JL
+      layerName = 'BPHL8:FOLU_JL_BPHL8';
+     } else if (layerName === 'Jasa Lingkungan') {
+      layerName = 'BPHL8:JASLING_BPHL8';// Update for FOLU JL
     } else if (layerName === 'PPHKM') {
       layerName = 'BPHL8:PPHKM_BPHL8'; 
     } else if (layerName === 'PPHD') {
@@ -3627,6 +3630,45 @@ function toggleKHDTK() {
   
 }
 
+
+function toggleJASLING() {
+  const prov = document.getElementById('provinsi').value;
+  const kab = document.getElementById('kabupaten').value;
+  const provName = document.getElementById('kabupaten').dataset.provName || '';
+  const show = document.getElementById('cb-jasling').checked;
+  const rekapBox = document.getElementById('rekap-jasling');
+
+  if (jaslingLayer) {
+    map.removeLayer(jaslingLayer);
+    jaslingLayer = null;
+    hideLegend('jasling');
+  }
+
+  if (!show || !prov || prov === 'WILKER') {
+    rekapBox.innerHTML = '';
+    return;
+  }
+
+  let cql = `WADMPR='${provName}'`;
+  if (kab) cql += ` AND WADMKK='${kab}'`;
+
+  jaslingLayer = new ol.layer.Image({
+    source: new ol.source.ImageWMS({
+      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
+      params: {
+        'LAYERS': 'BPHL8:JASLING_BPHL8',
+        'TILED': true,
+        'CQL_FILTER': cql
+      },
+      ratio: 1,
+      serverType: 'geoserver'
+    }),
+    visible: true
+  });
+
+  map.addLayer(jaslingLayer);
+  showLegend('jasling', 'BPHL8:JASLING_BPHL8');
+}
 
 
 function toggleFOLUJL() {
@@ -4805,5 +4847,6 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
