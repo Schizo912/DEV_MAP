@@ -3698,7 +3698,6 @@ function toggleJASLING() {
   if (jaslingLayer) {
     map.removeLayer(jaslingLayer);
     jaslingLayer = null;
-    hideLegend('jasling');
   }
 
   if (!show || !prov || prov === 'WILKER') {
@@ -3709,24 +3708,21 @@ function toggleJASLING() {
   let cql = `WADMPR='${provName}'`;
   if (kab) cql += ` AND WADMKK='${kab}'`;
 
-  jaslingLayer = new ol.layer.Image({
-    source: new ol.source.ImageWMS({
-      url: 'https://gs.schizone.biz.id/geoserver/BPHL8/wms',
-      params: {
-        'LAYERS': 'BPHL8:JASLING_BPHL8',
-        'TILED': true,
-        'CQL_FILTER': cql
-      },
-      ratio: 1,
-      serverType: 'geoserver'
-    }),
-    visible: true
+  const vectorSource = new ol.source.Vector({
+    format: new ol.format.GeoJSON(),
+    url: `https://gs.schizone.biz.id/geoserver/BPHL8/ows?service=WFS&version=1.1.0&request=GetFeature&typeName=BPHL8:JASLING_BPHL8&outputFormat=application/json&CQL_FILTER=${encodeURIComponent(cql)}`
+  });
+
+  jaslingLayer = new ol.layer.Vector({
+    source: vectorSource,
+    style: new ol.style.Style({
+      stroke: new ol.style.Stroke({ color: '#007bff', width: 2 }),
+      fill: new ol.style.Fill({ color: 'rgba(0,123,255,0.1)' })
+    })
   });
 
   map.addLayer(jaslingLayer);
-  showLegend('jasling', 'BPHL8:JASLING_BPHL8');
 }
-
 
 function toggleFOLUJL() {
   const prov = document.getElementById('provinsi').value;
@@ -4392,27 +4388,23 @@ map.on('singleclick', function (evt) {
   }
 	
 if (jaslingLayer && jaslingLayer.getVisible && jaslingLayer.getVisible()) {
-    let found = false;
-    map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
-      if (layer === jaslingLayer) {
-        const props = feature.getProperties();
-        const wisata = props.WISATA || props.wisata || '(tidak bernama)';
-        const luas = Number(props.LUAS || 0).toLocaleString('id-ID', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
+  let found = false;
+  map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+    if (layer === jaslingLayer) {
+      const props = feature.getProperties();
+      popup.innerHTML = `
+        <b>Jasa Lingkungan</b><br>
+        <b>Wisata:</b> ${props.WISATA || '-'}<br>
+        <b>Nama:</b> ${props.NAMA || '-'}
+      `;
+      overlay.setPosition(coordinate);
+      found = true;
+      return true;
+    }
+  });
+  if (found) return;
+}
 
-        popup.innerHTML = `
-          <b>${wisata}</b><br>
-          <span style="color:#0077cc;">Luas (ha):</span> ${luas}
-        `;
-        overlay.setPosition(coordinate);
-        found = true;
-        return true;
-      }
-    });
-    if (found) return;
-  }
 	
   if (ppkhPemdaLayer && ppkhPemdaLayer.getVisible && ppkhPemdaLayer.getVisible()) {
     let found = false;
@@ -4944,6 +4936,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
