@@ -1375,7 +1375,7 @@ function showRekapModalJASLING() {
           <tr>
             <td>Jasa Lingkungan*</td>
             <td style="text-align:center;">${uniqueSet.size}</td>
-            <td style="text-align:right;">${(totalArea / 10000).toFixed(2)}</td>
+            <td style="text-align:right;">${(totalArea / 10000).toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
           </tr>
         </table>`;
       rekapModalBody.innerHTML = html;
@@ -4701,6 +4701,14 @@ if (item.name === 'IPHPS' && props && props.NAMA_KELOM) {
       row.classList.add('rekap-highlight-row');      
     }
   }
+  // JASLING
+  if (item.name === 'jasling' && props && props.WISATA) {
+    const row = document.querySelector(`.rekap-jasling-row[data-renops="${props.WISATA.replace(/"/g, '&quot;')}"]`);
+    if (row) {
+      row.classList.add('rekap-highlight-row');
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
   // FOLU JL
   if (item.name === 'FOLU JL' && props && props.RENOPS_JAW) {
     const row = document.querySelector(`.rekap-folu-row[data-renops="${props.RENOPS_JAW.replace(/"/g, '&quot;')}"]`);
@@ -4913,6 +4921,7 @@ window.addEventListener('DOMContentLoaded', function() {
   </script>
 </body>
 </html>
+
 
 
 
